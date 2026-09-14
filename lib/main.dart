@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'screens/patient_dashboard_screen.dart';
+import 'screens/login_screen.dart';
 
 void main() {
   runApp(const NutriAgendaApp());
@@ -19,7 +19,7 @@ class NutriAgendaApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFFF7FCF9),
         useMaterial3: true,
       ),
-      home: const PatientDashboardScreen(),
+      home: LoginScreen(),
     );
   }
 }

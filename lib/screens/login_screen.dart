@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'register_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -21,7 +22,6 @@ class LoginScreen extends StatelessWidget {
   InputDecoration _estiloCampo({
     required String texto,
     required IconData icono,
-    bool esContrasena = false,
   }) {
     return InputDecoration(
       labelText: texto,
@@ -38,7 +38,10 @@ class LoginScreen extends StatelessWidget {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: verdePrincipal, width: 2),
+        borderSide: const BorderSide(
+          color: verdePrincipal,
+          width: 2,
+        ),
       ),
     );
   }
@@ -133,7 +136,6 @@ class LoginScreen extends StatelessWidget {
                             decoration: _estiloCampo(
                               texto: 'Contraseña',
                               icono: Icons.lock_outline_rounded,
-                              esContrasena: true,
                             ),
                           ),
                           Align(
@@ -182,14 +184,16 @@ class LoginScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 18),
-                          Row(
-                            children: const [
+                          const Row(
+                            children: [
                               Expanded(child: Divider()),
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 12),
                                 child: Text(
                                   'o',
-                                  style: TextStyle(color: Color(0xFF71827A)),
+                                  style: TextStyle(
+                                    color: Color(0xFF71827A),
+                                  ),
                                 ),
                               ),
                               Expanded(child: Divider()),
@@ -200,12 +204,16 @@ class LoginScreen extends StatelessWidget {
                             height: 52,
                             child: OutlinedButton.icon(
                               onPressed: () {
-                                _mostrarMensaje(
+                                Navigator.push(
                                   context,
-                                  'Aquí mostraremos el formulario para crear una cuenta.',
+                                  MaterialPageRoute(
+                                    builder: (context) => RegisterScreen(),
+                                  ),
                                 );
                               },
-                              icon: const Icon(Icons.person_add_alt_1_rounded),
+                              icon: const Icon(
+                                Icons.person_add_alt_1_rounded,
+                              ),
                               label: const Text(
                                 'Registrarme como nuevo usuario',
                                 style: TextStyle(
@@ -227,7 +235,8 @@ class LoginScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 22),
                           const Text(
-                            'Los roles de paciente, nutricionista y administrador serán asignados por el administrador.',
+                            'Los roles de paciente, nutricionista y administrador '
+                            'serán asignados por el administrador.',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Color(0xFF71827A),
