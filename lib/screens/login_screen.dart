@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'register_screen.dart';
+import 'forgot_password_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -142,9 +143,11 @@ class LoginScreen extends StatelessWidget {
                             alignment: Alignment.centerRight,
                             child: TextButton(
                               onPressed: () {
-                                _mostrarMensaje(
+                                Navigator.push(
                                   context,
-                                  'Aquí agregaremos la recuperación de contraseña.',
+                                  MaterialPageRoute(
+                                    builder: (context) => ForgotPasswordScreen()
+                                  ),
                                 );
                               },
                               child: const Text(
