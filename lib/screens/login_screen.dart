@@ -1,23 +1,96 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'register_screen.dart';
 import 'forgot_password_screen.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   static const Color verdePrincipal = Color(0xFF168B62);
   static const Color verdeMenta = Color(0xFFBFEFD8);
   static const Color fondoClaro = Color(0xFFF4FBF7);
   static const Color textoOscuro = Color(0xFF173D2D);
 
-  void _mostrarMensaje(BuildContext context, String mensaje) {
+  final _correoController = TextEditingController();
+  final _contrasenaController = TextEditingController();
+  bool _cargando = false;
+
+  @override
+  void dispose() {
+    _correoController.dispose();
+    _contrasenaController.dispose();
+    super.dispose();
+  }
+
+  void _mostrarMensaje(String mensaje, {bool esError = false}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(mensaje),
         behavior: SnackBarBehavior.floating,
-        backgroundColor: verdePrincipal,
+        backgroundColor: esError ? Colors.redAccent : verdePrincipal,
       ),
     );
+  }
+
+  Future<void> _iniciarSesion() async {
+    if (_correoController.text.trim().isEmpty ||
+        _contrasenaController.text.isEmpty) {
+      _mostrarMensaje('Ingresa tu correo y contraseña.', esError: true);
+      return;
+    }
+
+    setState(() {
+      _cargando = true;
+    });
+
+    try {
+      final respuesta = await Supabase.instance.client.auth.signInWithPassword(
+        email: _correoController.text.trim(),
+        password: _contrasenaController.text,
+      );
+
+      final usuario = respuesta.user;
+      if (usuario == null) {
+        _mostrarMensaje('No se pudo iniciar sesión.', esError: true);
+        return;
+      }
+
+      final perfil = await Supabase.instance.client
+          .from('profiles')
+          .select()
+          .eq('id', usuario.id)
+          .single();
+
+      if (!mounted) return;
+
+      final rol = perfil['rol'] as String;
+
+      switch (rol) {
+        case 'nutricionista':
+          Navigator.pushReplacementNamed(context, '/nutritionist-dashboard');
+          break;
+        case 'administrador':
+          Navigator.pushReplacementNamed(context, '/admin-dashboard');
+          break;
+        default:
+          Navigator.pushReplacementNamed(context, '/patient-dashboard');
+      }
+    } on AuthException catch (error) {
+      _mostrarMensaje(error.message, esError: true);
+    } catch (error) {
+      _mostrarMensaje('Ocurrió un error: $error', esError: true);
+    } finally {
+      if (mounted) {
+        setState(() {
+          _cargando = false;
+        });
+      }
+    }
   }
 
   InputDecoration _estiloCampo({
@@ -125,6 +198,7 @@ class LoginScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 28),
                           TextField(
+                            controller: _correoController,
                             keyboardType: TextInputType.emailAddress,
                             decoration: _estiloCampo(
                               texto: 'Correo electrónico',
@@ -133,6 +207,7 @@ class LoginScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 16),
                           TextField(
+                            controller: _contrasenaController,
                             obscureText: true,
                             decoration: _estiloCampo(
                               texto: 'Contraseña',
@@ -163,12 +238,7 @@ class LoginScreen extends StatelessWidget {
                           SizedBox(
                             height: 52,
                             child: ElevatedButton(
-                              onPressed: () {
-                                _mostrarMensaje(
-                                  context,
-                                  'Aquí conectaremos el inicio de sesión con Supabase.',
-                                );
-                              },
+                              onPressed: _cargando ? null : _iniciarSesion,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: verdePrincipal,
                                 foregroundColor: Colors.white,
@@ -177,13 +247,22 @@ class LoginScreen extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(14),
                                 ),
                               ),
-                              child: const Text(
-                                'Iniciar sesión',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                              child: _cargando
+                                  ? const SizedBox(
+                                      height: 22,
+                                      width: 22,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2.5,
+                                      ),
+                                    )
+                                  : const Text(
+                                      'Iniciar sesión',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                             ),
                           ),
                           const SizedBox(height: 18),

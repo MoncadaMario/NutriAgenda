@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'screens/admin_dashboard_screen.dart';
 import 'screens/appointment_confirmation_screen.dart';
@@ -14,9 +16,17 @@ import 'screens/register_screen.dart';
 import 'screens/schedule_appointment_screen.dart';
 import 'screens/user_management_screen.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
+  await Supabase.initialize(
+    url: dotenv.env['SUPABASE_URL']!,
+    anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
+  );
   runApp(const NutriAgendaApp());
 }
+
+final supabase = Supabase.instance.client;
 
 class NutriAgendaApp extends StatelessWidget {
   const NutriAgendaApp({super.key});

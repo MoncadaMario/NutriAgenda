@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -23,6 +24,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _esNutricionista = false;
   bool _ocultarContrasena = true;
   bool _ocultarConfirmacion = true;
+  bool _cargando = false;
 
   @override
   void dispose() {
@@ -63,25 +65,70 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  void _registrarUsuario() {
+  Future<void> _registrarUsuario() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    final tipoUsuario = _esNutricionista
-        ? 'nutricionista pendiente de pago'
-        : 'paciente';
+    setState(() {
+      _cargando = true;
+    });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Cuenta de $tipoUsuario preparada. '
-          'Luego la conectaremos con Supabase.',
+    final rol = _esNutricionista ? 'nutricionista' : 'paciente';
+
+    try {
+      final response = await Supabase.instance.client.auth.signUp(
+        email: _correoController.text.trim(),
+        password: _contrasenaController.text,
+        data: {
+          'nombre': _nombreController.text.trim(),
+          'telefono': _telefonoController.text.trim(),
+          'rol': rol,
+        },
+      );
+
+      if (!mounted) return;
+
+      if (response.user != null) {
+        final mensaje = _esNutricionista
+            ? 'Cuenta creada. Tu perfil de nutricionista quedará pendiente de aprobación.'
+            : 'Cuenta creada correctamente. Ya puedes iniciar sesión.';
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(mensaje),
+            backgroundColor: verdePrincipal,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+
+        Navigator.pop(context);
+      }
+    } on AuthException catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error.message),
+          backgroundColor: Colors.redAccent,
+          behavior: SnackBarBehavior.floating,
         ),
-        backgroundColor: verdePrincipal,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+      );
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Ocurrió un error inesperado: $error'),
+          backgroundColor: Colors.redAccent,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _cargando = false;
+        });
+      }
+    }
   }
 
   @override
@@ -319,7 +366,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         SizedBox(
                           height: 52,
                           child: ElevatedButton(
-                            onPressed: _registrarUsuario,
+                            onPressed: _cargando ? null : _registrarUsuario,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: verdePrincipal,
                               foregroundColor: Colors.white,
@@ -328,13 +375,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 borderRadius: BorderRadius.circular(14),
                               ),
                             ),
-                            child: const Text(
-                              'Crear cuenta',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            child: _cargando
+                                ? const SizedBox(
+                                    height: 22,
+                                    width: 22,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2.5,
+                                    ),
+                                  )
+                                : const Text(
+                                    'Crear cuenta',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                           ),
                         ),
                         const SizedBox(height: 18),
