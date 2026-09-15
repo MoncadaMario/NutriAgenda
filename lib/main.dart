@@ -3,7 +3,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'screens/admin_dashboard_screen.dart';
-import 'screens/appointment_confirmation_screen.dart';
 import 'screens/consultation_form_screen.dart';
 import 'screens/forgot_password_screen.dart';
 import 'screens/login_screen.dart';
@@ -50,7 +49,6 @@ class NutriAgendaApp extends StatelessWidget {
         '/forgot-password': (context) => ForgotPasswordScreen(),
         '/patient-dashboard': (context) => PatientDashboardScreen(),
         '/nutritionist-dashboard': (context) => NutritionistDashboardScreen(),
-        '/appointment-confirmation': (context) => AppointmentConfirmationScreen(),
         '/admin-dashboard': (context) => AdminDashboardScreen(),
         '/user-management': (context) => UserManagementScreen(),
       },

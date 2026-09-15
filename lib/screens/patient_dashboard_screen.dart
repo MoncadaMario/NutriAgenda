@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'schedule_appointment_screen.dart';
+import 'appointment_confirmation_screen.dart';
 
 class PatientDashboardScreen extends StatefulWidget {
   const PatientDashboardScreen({super.key});
@@ -44,7 +44,6 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
   }
 
   String _formatearHora(String hora) {
-    // hora viene como "HH:mm:ss"
     final partes = hora.split(':');
     var h = int.parse(partes[0]);
     final m = partes[1];
@@ -229,10 +228,8 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
                       color: verdePrincipal,
                       borderRadius: BorderRadius.circular(24),
                     ),
-                    child: Wrap(
-                      alignment: WrapAlignment.spaceBetween,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      runSpacing: 20,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           mainAxisSize: MainAxisSize.min,
@@ -271,7 +268,7 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
                                 const SizedBox(height: 4),
                                 Text(
                                   _proximaCita == null
-                                      ? ''
+                                      ? 'Tu nutricionista te asignará una próxima cita.'
                                       : _proximaCita!['tipo'] as String,
                                   style: const TextStyle(
                                     color: Color(0xFFDDF8E8),
@@ -281,27 +278,33 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
                             ),
                           ],
                         ),
-                        FilledButton.icon(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const ScheduleAppointmentScreen(),
+                        if (_proximaCita != null) ...[
+                          const SizedBox(height: 16),
+                          OutlinedButton.icon(
+                            onPressed: () async {
+                              await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      AppointmentConfirmationScreen(
+                                    cita: _proximaCita!,
+                                  ),
+                                ),
+                              );
+                              _cargarDatos();
+                            },
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              side: const BorderSide(color: Colors.white),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 14,
                               ),
-                            );
-                          },
-                          style: FilledButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            foregroundColor: verdePrincipal,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 16,
                             ),
+                            icon: const Icon(Icons.event_available_outlined),
+                            label: const Text('Ver detalles de mi cita'),
                           ),
-                          icon: const Icon(Icons.add_circle_outline_rounded),
-                          label: const Text('Agendar nueva cita'),
-                        ),
+                        ],
                       ],
                     ),
                   ),
