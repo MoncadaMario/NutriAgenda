@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ScheduleAppointmentScreen extends StatefulWidget {
-  const ScheduleAppointmentScreen({super.key});
+  final String? pacienteId;
+  final String? nombrePaciente;
+
+  const ScheduleAppointmentScreen({
+    super.key,
+    this.pacienteId,
+    this.nombrePaciente,
+  });
 
   @override
   State<ScheduleAppointmentScreen> createState() =>
@@ -15,19 +23,15 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
 
   final _formKey = GlobalKey<FormState>();
   final _notasController = TextEditingController();
+  final _cliente = Supabase.instance.client;
 
-  String? _pacienteSeleccionado;
   String _tipoCita = 'Primera consulta';
   String _duracion = '60 minutos';
   DateTime? _fechaSeleccionada;
   TimeOfDay? _horaSeleccionada;
+  bool _guardando = false;
 
-  final List<String> pacientes = [
-    'Juan Martínez',
-    'María López',
-    'Carlos Hernández',
-    'Sofía Ramírez',
-  ];
+  bool get _esNutricionistaAgendando => widget.pacienteId != null;
 
   @override
   void dispose() {
@@ -71,7 +75,7 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
     }
   }
 
-  void _agendarCita() {
+  Future<void> _agendarCita() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -87,16 +91,59 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Cita preparada para $_pacienteSeleccionado. '
-          'Luego se guardará en Supabase.',
+    final usuario = _cliente.auth.currentUser;
+    if (usuario == null) return;
+
+    setState(() {
+      _guardando = true;
+    });
+
+    try {
+      final fechaIso =
+          '${_fechaSeleccionada!.year.toString().padLeft(4, '0')}-'
+          '${_fechaSeleccionada!.month.toString().padLeft(2, '0')}-'
+          '${_fechaSeleccionada!.day.toString().padLeft(2, '0')}';
+      final horaIso =
+          '${_horaSeleccionada!.hour.toString().padLeft(2, '0')}:'
+          '${_horaSeleccionada!.minute.toString().padLeft(2, '0')}:00';
+
+      await _cliente.from('appointments').insert({
+        'paciente_id': widget.pacienteId ?? usuario.id,
+        'nutricionista_id': _esNutricionistaAgendando ? usuario.id : null,
+        'tipo': _tipoCita,
+        'duracion': _duracion,
+        'fecha': fechaIso,
+        'hora': horaIso,
+        'notas': _notasController.text.trim(),
+      });
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Cita agendada correctamente.'),
+          backgroundColor: verdePrincipal,
+          behavior: SnackBarBehavior.floating,
         ),
-        backgroundColor: verdePrincipal,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+      );
+
+      Navigator.pop(context);
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error al agendar la cita: $error'),
+          backgroundColor: Colors.redAccent,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _guardando = false;
+        });
+      }
+    }
   }
 
   InputDecoration _estiloCampo({
@@ -171,9 +218,9 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      const Row(
+                      Row(
                         children: [
-                          CircleAvatar(
+                          const CircleAvatar(
                             radius: 24,
                             backgroundColor: Color(0xFFDDF8E8),
                             child: Icon(
@@ -181,12 +228,12 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
                               color: verdePrincipal,
                             ),
                           ),
-                          SizedBox(width: 14),
+                          const SizedBox(width: 14),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
+                                const Text(
                                   'Nueva cita',
                                   style: TextStyle(
                                     color: verdeOscuro,
@@ -194,10 +241,12 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                SizedBox(height: 4),
+                                const SizedBox(height: 4),
                                 Text(
-                                  'Selecciona los datos de la cita del paciente.',
-                                  style: TextStyle(
+                                  _esNutricionistaAgendando
+                                      ? 'Cita para ${widget.nombrePaciente}.'
+                                      : 'Selecciona los datos de tu cita.',
+                                  style: const TextStyle(
                                     color: Color(0xFF61766C),
                                   ),
                                 ),
@@ -207,30 +256,28 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
                         ],
                       ),
                       const SizedBox(height: 30),
-                      DropdownButtonFormField<String>(
-                        value: _pacienteSeleccionado,
-                        decoration: _estiloCampo(
-                          texto: 'Paciente',
-                          icono: Icons.person_outline_rounded,
+                      if (_esNutricionistaAgendando)
+                        Container(
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF0FAF4),
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.person_outline_rounded,
+                                  color: verdePrincipal),
+                              const SizedBox(width: 10),
+                              Text(
+                                'Paciente: ${widget.nombrePaciente}',
+                                style: const TextStyle(
+                                  color: verdeOscuro,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        items: pacientes.map((paciente) {
-                          return DropdownMenuItem(
-                            value: paciente,
-                            child: Text(paciente),
-                          );
-                        }).toList(),
-                        onChanged: (valor) {
-                          setState(() {
-                            _pacienteSeleccionado = valor;
-                          });
-                        },
-                        validator: (valor) {
-                          if (valor == null) {
-                            return 'Selecciona un paciente.';
-                          }
-                          return null;
-                        },
-                      ),
                       const SizedBox(height: 18),
                       DropdownButtonFormField<String>(
                         value: _tipoCita,
@@ -372,7 +419,7 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
                       SizedBox(
                         height: 52,
                         child: ElevatedButton.icon(
-                          onPressed: _agendarCita,
+                          onPressed: _guardando ? null : _agendarCita,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: verdePrincipal,
                             foregroundColor: Colors.white,
@@ -381,10 +428,19 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
                               borderRadius: BorderRadius.circular(14),
                             ),
                           ),
-                          icon: const Icon(Icons.event_available_rounded),
-                          label: const Text(
-                            'Agendar cita',
-                            style: TextStyle(
+                          icon: _guardando
+                              ? const SizedBox(
+                                  height: 18,
+                                  width: 18,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2.5,
+                                  ),
+                                )
+                              : const Icon(Icons.event_available_rounded),
+                          label: Text(
+                            _guardando ? 'Agendando...' : 'Agendar cita',
+                            style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),

@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MenuAssignmentScreen extends StatefulWidget {
-  const MenuAssignmentScreen({super.key});
+  final String pacienteId;
+  final String nombrePaciente;
+
+  const MenuAssignmentScreen({
+    super.key,
+    required this.pacienteId,
+    required this.nombrePaciente,
+  });
 
   @override
   State<MenuAssignmentScreen> createState() => _MenuAssignmentScreenState();
@@ -10,16 +18,66 @@ class MenuAssignmentScreen extends StatefulWidget {
 class _MenuAssignmentScreenState extends State<MenuAssignmentScreen> {
   static const verde = Color(0xFF168B62);
 
-  String paciente = 'Juan Martínez';
-  bool adjuntarPdf = false;
+  final _formKey = GlobalKey<FormState>();
+  final _cliente = Supabase.instance.client;
 
-  void _mostrarMensaje(String mensaje) {
+  final _nombreMenuController = TextEditingController();
+  final _indicacionesController = TextEditingController();
+
+  bool _guardando = false;
+
+  @override
+  void dispose() {
+    _nombreMenuController.dispose();
+    _indicacionesController.dispose();
+    super.dispose();
+  }
+
+  void _mostrarMensaje(String mensaje, {bool esError = false}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(mensaje),
-        backgroundColor: verde,
+        backgroundColor: esError ? Colors.redAccent : verde,
       ),
     );
+  }
+
+  Future<void> _asignarMenu() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    final usuario = _cliente.auth.currentUser;
+    if (usuario == null) return;
+
+    setState(() {
+      _guardando = true;
+    });
+
+    try {
+      final contenido =
+          '${_nombreMenuController.text.trim()}\n\n${_indicacionesController.text.trim()}';
+
+      await _cliente.from('menus').insert({
+        'paciente_id': widget.pacienteId,
+        'nutricionista_id': usuario.id,
+        'contenido': contenido,
+      });
+
+      if (!mounted) return;
+
+      _mostrarMensaje('Menú asignado a ${widget.nombrePaciente} correctamente.');
+      Navigator.pop(context);
+    } catch (error) {
+      if (!mounted) return;
+      _mostrarMensaje('Error al asignar el menú: $error', esError: true);
+    } finally {
+      if (mounted) {
+        setState(() {
+          _guardando = false;
+        });
+      }
+    }
   }
 
   @override
@@ -46,91 +104,97 @@ class _MenuAssignmentScreenState extends State<MenuAssignmentScreen> {
               elevation: 0,
               child: Padding(
                 padding: const EdgeInsets.all(28),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    DropdownButtonFormField<String>(
-                      value: paciente,
-                      decoration: const InputDecoration(
-                        labelText: 'Paciente',
-                        prefixIcon: Icon(Icons.person_outline, color: verde),
-                      ),
-                      items: const [
-                        DropdownMenuItem(
-                          value: 'Juan Martínez',
-                          child: Text('Juan Martínez'),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        'Menú para ${widget.nombrePaciente}',
+                        style: const TextStyle(
+                          fontSize: 21,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF173D2D),
                         ),
-                        DropdownMenuItem(
-                          value: 'María López',
-                          child: Text('María López'),
+                      ),
+                      const SizedBox(height: 24),
+                      TextFormField(
+                        controller: _nombreMenuController,
+                        decoration: const InputDecoration(
+                          labelText: 'Nombre del menú',
+                          prefixIcon:
+                              Icon(Icons.menu_book_outlined, color: verde),
                         ),
-                        DropdownMenuItem(
-                          value: 'Carlos Hernández',
-                          child: Text('Carlos Hernández'),
+                        validator: (valor) =>
+                            valor == null || valor.trim().isEmpty
+                                ? 'Ingresa un nombre para el menú.'
+                                : null,
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _indicacionesController,
+                        maxLines: 6,
+                        decoration: const InputDecoration(
+                          labelText: 'Indicaciones o menú escrito',
+                          alignLabelWithHint: true,
+                          prefixIcon:
+                              Icon(Icons.restaurant_menu, color: verde),
                         ),
-                      ],
-                      onChanged: (valor) {
-                        setState(() {
-                          paciente = valor!;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: 'Nombre del menú',
-                        prefixIcon: Icon(Icons.menu_book_outlined, color: verde),
+                        validator: (valor) =>
+                            valor == null || valor.trim().isEmpty
+                                ? 'Escribe las indicaciones del menú.'
+                                : null,
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      maxLines: 6,
-                      decoration: const InputDecoration(
-                        labelText: 'Indicaciones o menú escrito',
-                        alignLabelWithHint: true,
-                        prefixIcon: Icon(Icons.restaurant_menu, color: verde),
+                      const SizedBox(height: 20),
+                      Container(
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF0FAF4),
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: const Row(
+                          children: [
+                            Icon(Icons.info_outline_rounded, color: verde),
+                            SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                'La opción de adjuntar PDF estará disponible '
+                                'próximamente con Supabase Storage. Por ahora '
+                                'usa el menú escrito.',
+                                style: TextStyle(
+                                  color: Color(0xFF366452),
+                                  fontSize: 13,
+                                  height: 1.35,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    SwitchListTile(
-                      value: adjuntarPdf,
-                      activeColor: verde,
-                      title: const Text('Adjuntar menú en PDF'),
-                      subtitle: const Text(
-                        'Más adelante se subirá a Supabase Storage.',
+                      const SizedBox(height: 24),
+                      ElevatedButton.icon(
+                        onPressed: _guardando ? null : _asignarMenu,
+                        icon: _guardando
+                            ? const SizedBox(
+                                height: 18,
+                                width: 18,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2.5,
+                                ),
+                              )
+                            : const Icon(Icons.send_outlined),
+                        label: Text(
+                          _guardando ? 'Asignando...' : 'Asignar menú',
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: verde,
+                          foregroundColor: Colors.white,
+                          minimumSize: const Size.fromHeight(52),
+                        ),
                       ),
-                      onChanged: (valor) {
-                        setState(() {
-                          adjuntarPdf = valor;
-                        });
-                      },
-                    ),
-                    if (adjuntarPdf)
-                      OutlinedButton.icon(
-                        onPressed: () {
-                          _mostrarMensaje(
-                            'Aquí se abrirá el selector de archivos PDF.',
-                          );
-                        },
-                        icon: const Icon(Icons.upload_file_outlined),
-                        label: const Text('Seleccionar archivo PDF'),
-                      ),
-                    const SizedBox(height: 24),
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        _mostrarMensaje(
-                          'Menú preparado para asignar a $paciente.',
-                        );
-                      },
-                      icon: const Icon(Icons.send_outlined),
-                      label: const Text('Asignar menú'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: verde,
-                        foregroundColor: Colors.white,
-                        minimumSize: const Size.fromHeight(52),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

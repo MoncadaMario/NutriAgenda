@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'schedule_appointment_screen.dart';
 
 class PatientDashboardScreen extends StatefulWidget {
   const PatientDashboardScreen({super.key});
@@ -282,7 +283,13 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
                         ),
                         FilledButton.icon(
                           onPressed: () {
-                            Navigator.pushNamed(context, '/schedule-appointment');
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const ScheduleAppointmentScreen(),
+                              ),
+                            );
                           },
                           style: FilledButton.styleFrom(
                             backgroundColor: Colors.white,

@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ConsultationFormScreen extends StatefulWidget {
-  const ConsultationFormScreen({super.key});
+  final String pacienteId;
+  final String nombrePaciente;
+
+  const ConsultationFormScreen({
+    super.key,
+    required this.pacienteId,
+    required this.nombrePaciente,
+  });
 
   @override
   State<ConsultationFormScreen> createState() =>
@@ -12,16 +20,78 @@ class _ConsultationFormScreenState extends State<ConsultationFormScreen> {
   static const verde = Color(0xFF168B62);
 
   final _formKey = GlobalKey<FormState>();
-  String genero = 'Masculino';
+  final _cliente = Supabase.instance.client;
 
-  void _guardarConsulta() {
-    if (_formKey.currentState!.validate()) {
+  final _pesoController = TextEditingController();
+  final _estaturaController = TextEditingController();
+  final _edadController = TextEditingController();
+  final _imcController = TextEditingController();
+  final _grasaController = TextEditingController();
+  final _observacionesController = TextEditingController();
+
+  String genero = 'Masculino';
+  bool _guardando = false;
+
+  @override
+  void dispose() {
+    _pesoController.dispose();
+    _estaturaController.dispose();
+    _edadController.dispose();
+    _imcController.dispose();
+    _grasaController.dispose();
+    _observacionesController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _guardarConsulta() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    final usuario = _cliente.auth.currentUser;
+    if (usuario == null) return;
+
+    setState(() {
+      _guardando = true;
+    });
+
+    try {
+      await _cliente.from('consultations').insert({
+        'paciente_id': widget.pacienteId,
+        'nutricionista_id': usuario.id,
+        'peso': double.parse(_pesoController.text),
+        'estatura': double.parse(_estaturaController.text),
+        'genero': genero,
+        'edad': int.parse(_edadController.text),
+        'imc': double.parse(_imcController.text),
+        'porcentaje_grasa': double.parse(_grasaController.text),
+        'observaciones': _observacionesController.text.trim(),
+      });
+
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Consulta preparada para guardarse en Supabase.'),
+          content: Text('Consulta guardada correctamente.'),
           backgroundColor: verde,
         ),
       );
+
+      Navigator.pop(context);
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error al guardar la consulta: $error'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _guardando = false;
+        });
+      }
     }
   }
 
@@ -64,9 +134,9 @@ class _ConsultationFormScreenState extends State<ConsultationFormScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      const Text(
-                        'Datos de Juan Martínez',
-                        style: TextStyle(
+                      Text(
+                        'Datos de ${widget.nombrePaciente}',
+                        style: const TextStyle(
                           fontSize: 21,
                           fontWeight: FontWeight.bold,
                           color: Color(0xFF173D2D),
@@ -74,23 +144,31 @@ class _ConsultationFormScreenState extends State<ConsultationFormScreen> {
                       ),
                       const SizedBox(height: 24),
                       TextFormField(
-                        keyboardType: TextInputType.number,
+                        controller: _pesoController,
+                        keyboardType:
+                            const TextInputType.numberWithOptions(decimal: true),
                         decoration: _campo(
                           'Peso en kilogramos',
                           Icons.monitor_weight_outlined,
                         ),
                         validator: (valor) =>
-                            valor!.isEmpty ? 'Ingresa el peso.' : null,
+                            valor == null || valor.isEmpty
+                                ? 'Ingresa el peso.'
+                                : null,
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
-                        keyboardType: TextInputType.number,
+                        controller: _estaturaController,
+                        keyboardType:
+                            const TextInputType.numberWithOptions(decimal: true),
                         decoration: _campo(
                           'Estatura en metros',
                           Icons.height_rounded,
                         ),
                         validator: (valor) =>
-                            valor!.isEmpty ? 'Ingresa la estatura.' : null,
+                            valor == null || valor.isEmpty
+                                ? 'Ingresa la estatura.'
+                                : null,
                       ),
                       const SizedBox(height: 16),
                       DropdownButtonFormField<String>(
@@ -118,30 +196,42 @@ class _ConsultationFormScreenState extends State<ConsultationFormScreen> {
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
+                        controller: _edadController,
                         keyboardType: TextInputType.number,
                         decoration: _campo('Edad', Icons.cake_outlined),
                         validator: (valor) =>
-                            valor!.isEmpty ? 'Ingresa la edad.' : null,
+                            valor == null || valor.isEmpty
+                                ? 'Ingresa la edad.'
+                                : null,
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
-                        keyboardType: TextInputType.number,
+                        controller: _imcController,
+                        keyboardType:
+                            const TextInputType.numberWithOptions(decimal: true),
                         decoration: _campo('IMC', Icons.favorite_outline),
                         validator: (valor) =>
-                            valor!.isEmpty ? 'Ingresa el IMC.' : null,
+                            valor == null || valor.isEmpty
+                                ? 'Ingresa el IMC.'
+                                : null,
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
-                        keyboardType: TextInputType.number,
+                        controller: _grasaController,
+                        keyboardType:
+                            const TextInputType.numberWithOptions(decimal: true),
                         decoration: _campo(
                           'Porcentaje de grasa',
                           Icons.percent_rounded,
                         ),
                         validator: (valor) =>
-                            valor!.isEmpty ? 'Ingresa el porcentaje.' : null,
+                            valor == null || valor.isEmpty
+                                ? 'Ingresa el porcentaje.'
+                                : null,
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
+                        controller: _observacionesController,
                         maxLines: 4,
                         decoration: _campo(
                           'Observaciones',
@@ -150,9 +240,20 @@ class _ConsultationFormScreenState extends State<ConsultationFormScreen> {
                       ),
                       const SizedBox(height: 24),
                       ElevatedButton.icon(
-                        onPressed: _guardarConsulta,
-                        icon: const Icon(Icons.save_outlined),
-                        label: const Text('Guardar consulta'),
+                        onPressed: _guardando ? null : _guardarConsulta,
+                        icon: _guardando
+                            ? const SizedBox(
+                                height: 18,
+                                width: 18,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2.5,
+                                ),
+                              )
+                            : const Icon(Icons.save_outlined),
+                        label: Text(
+                          _guardando ? 'Guardando...' : 'Guardar consulta',
+                        ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: verde,
                           foregroundColor: Colors.white,
