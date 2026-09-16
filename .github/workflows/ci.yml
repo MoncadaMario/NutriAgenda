@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: write
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -27,5 +30,17 @@ jobs:
       - name: Analizar codigo
         run: flutter analyze --no-fatal-infos --no-fatal-warnings
 
-      - name: Correr tests
-        run: flutter test
+      - name: Correr tests con cobertura
+        run: flutter test --coverage
+
+      - name: Guardar el reporte de cobertura en el repo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add coverage/lcov.info
+          if git diff --staged --quiet; then
+            echo "Sin cambios en cobertura, no se hace commit."
+          else
+            git commit -m "chore: actualizar reporte de cobertura [skip ci]"
+            git push
+          fi

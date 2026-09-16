@@ -20,7 +20,6 @@ class _ConsultationFormScreenState extends State<ConsultationFormScreen> {
   static const verde = Color(0xFF168B62);
 
   final _formKey = GlobalKey<FormState>();
-  final _cliente = Supabase.instance.client;
 
   final _pesoController = TextEditingController();
   final _estaturaController = TextEditingController();
@@ -56,7 +55,7 @@ class _ConsultationFormScreenState extends State<ConsultationFormScreen> {
     });
 
     try {
-      await _cliente.from('consultations').insert({
+      await Supabase.instance.client.from('consultations').insert({
         'paciente_id': widget.pacienteId,
         'nutricionista_id': usuario.id,
         'peso': double.parse(_pesoController.text),

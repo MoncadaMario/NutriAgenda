@@ -21,7 +21,6 @@ class _AppointmentConfirmationScreenState
     'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre',
   ];
 
-  final _cliente = Supabase.instance.client;
   late String _estado;
   bool _actualizando = false;
 
@@ -70,8 +69,7 @@ class _AppointmentConfirmationScreenState
     });
 
     try {
-      await _cliente
-          .from('appointments')
+      await Supabase.instance.client.from('appointments')
           .update({'estado': nuevoEstado})
           .eq('id', widget.cita['id']);
 

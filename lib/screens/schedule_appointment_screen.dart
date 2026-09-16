@@ -23,7 +23,6 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
 
   final _formKey = GlobalKey<FormState>();
   final _notasController = TextEditingController();
-  final _cliente = Supabase.instance.client;
 
   String _tipoCita = 'Primera consulta';
   String _duracion = '60 minutos';
@@ -91,7 +90,7 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
       return;
     }
 
-    final usuario = _cliente.auth.currentUser;
+    final usuario = Supabase.instance.client.auth.currentUser;
     if (usuario == null) return;
 
     setState(() {
@@ -107,7 +106,7 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
           '${_horaSeleccionada!.hour.toString().padLeft(2, '0')}:'
           '${_horaSeleccionada!.minute.toString().padLeft(2, '0')}:00';
 
-      await _cliente.from('appointments').insert({
+      await Supabase.instance.client.from('appointments').insert({
         'paciente_id': widget.pacienteId ?? usuario.id,
         'nutricionista_id': _esNutricionistaAgendando ? usuario.id : null,
         'tipo': _tipoCita,

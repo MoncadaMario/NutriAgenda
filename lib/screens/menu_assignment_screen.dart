@@ -19,7 +19,6 @@ class _MenuAssignmentScreenState extends State<MenuAssignmentScreen> {
   static const verde = Color(0xFF168B62);
 
   final _formKey = GlobalKey<FormState>();
-  final _cliente = Supabase.instance.client;
 
   final _nombreMenuController = TextEditingController();
   final _indicacionesController = TextEditingController();
@@ -47,7 +46,7 @@ class _MenuAssignmentScreenState extends State<MenuAssignmentScreen> {
       return;
     }
 
-    final usuario = _cliente.auth.currentUser;
+    final usuario = Supabase.instance.client.auth.currentUser;
     if (usuario == null) return;
 
     setState(() {
@@ -58,7 +57,7 @@ class _MenuAssignmentScreenState extends State<MenuAssignmentScreen> {
       final contenido =
           '${_nombreMenuController.text.trim()}\n\n${_indicacionesController.text.trim()}';
 
-      await _cliente.from('menus').insert({
+      await Supabase.instance.client.from('menus').insert({
         'paciente_id': widget.pacienteId,
         'nutricionista_id': usuario.id,
         'contenido': contenido,
