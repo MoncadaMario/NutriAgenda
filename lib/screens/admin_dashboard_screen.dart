@@ -112,7 +112,6 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           style: TextStyle(color: oscuro, fontWeight: FontWeight.bold),
         ),
         actions: [
-                  actions: [
           IconButton(
             tooltip: 'Cerrar sesión',
             onPressed: () async {

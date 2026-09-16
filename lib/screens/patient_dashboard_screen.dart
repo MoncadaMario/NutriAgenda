@@ -166,7 +166,6 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
           ],
         ),
         actions: [
-                  actions: [
           IconButton(
             tooltip: 'Cerrar sesión',
             onPressed: () async {

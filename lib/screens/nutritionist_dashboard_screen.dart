@@ -190,7 +190,6 @@ class _NutritionistDashboardScreenState
           ],
         ),
         actions: [
-                  actions: [
           IconButton(
             tooltip: 'Cerrar sesión',
             onPressed: () async {
