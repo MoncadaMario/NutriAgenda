@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nutriagenda/screens/schedule_appointment_screen.dart';
+import '../test_helpers.dart';
 
 void main() {
   testWidgets('ScheduleAppointmentScreen muestra el nombre del paciente',
       (tester) async {
+    usarVentanaDePruebaGrande(tester);
     await tester.pumpWidget(const MaterialApp(
       home: ScheduleAppointmentScreen(
         pacienteId: 'id-de-prueba',
@@ -18,6 +20,7 @@ void main() {
 
   testWidgets('ScheduleAppointmentScreen avisa si falta fecha y hora',
       (tester) async {
+    usarVentanaDePruebaGrande(tester);
     await tester.pumpWidget(const MaterialApp(
       home: ScheduleAppointmentScreen(
         pacienteId: 'id-de-prueba',
