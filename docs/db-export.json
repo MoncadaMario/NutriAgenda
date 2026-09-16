@@ -1,10 +1,8 @@
-[
-  {
-    "generar_export_json": {
+{
       "motor": "postgres",
       "tablas": [
         {
-          "filas": 0,
+          "filas": 3,
           "nombre": "appointments",
           "indices": [
             "appointments_pkey"
@@ -73,11 +71,11 @@
           ],
           "relaciones": [
             {
-              "columna": "nutricionista_id",
+              "columna": "paciente_id",
               "referencia": "profiles.id"
             },
             {
-              "columna": "paciente_id",
+              "columna": "nutricionista_id",
               "referencia": "profiles.id"
             }
           ],
@@ -87,7 +85,7 @@
           ]
         },
         {
-          "filas": 0,
+          "filas": 4,
           "nombre": "consultations",
           "indices": [
             "consultations_pkey"
@@ -162,11 +160,11 @@
           ],
           "relaciones": [
             {
-              "columna": "nutricionista_id",
+              "columna": "paciente_id",
               "referencia": "profiles.id"
             },
             {
-              "columna": "paciente_id",
+              "columna": "nutricionista_id",
               "referencia": "profiles.id"
             }
           ],
@@ -176,7 +174,7 @@
           ]
         },
         {
-          "filas": 0,
+          "filas": 3,
           "nombre": "menus",
           "indices": [
             "menus_pkey"
@@ -221,11 +219,11 @@
           ],
           "relaciones": [
             {
-              "columna": "nutricionista_id",
+              "columna": "paciente_id",
               "referencia": "profiles.id"
             },
             {
-              "columna": "paciente_id",
+              "columna": "nutricionista_id",
               "referencia": "profiles.id"
             }
           ],
@@ -235,7 +233,7 @@
           ]
         },
         {
-          "filas": 0,
+          "filas": 3,
           "nombre": "notificaciones",
           "indices": [
             "notificaciones_pkey",
@@ -284,7 +282,7 @@
           ]
         },
         {
-          "filas": 3,
+          "filas": 7,
           "nombre": "profiles",
           "indices": [
             "profiles_pkey"
@@ -343,7 +341,5 @@
           ]
         }
       ],
-      "generado_at": "2026-09-16T04:38:27Z"
+      "generado_at": "2026-09-16T14:51:09Z"
     }
-  }
-]
