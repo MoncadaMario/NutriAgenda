@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'appointment_confirmation_screen.dart';
 import '../widgets/logout_button.dart';
+import '../utils/formatters.dart';
 
 class PatientDashboardScreen extends StatefulWidget {
   const PatientDashboardScreen({super.key});
@@ -28,30 +29,10 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
   List<Map<String, dynamic>> _historial = [];
   Map<String, dynamic>? _ultimoMenu;
 
-  static const _meses = [
-    '', 'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
-    'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre',
-  ];
-
   @override
   void initState() {
     super.initState();
     _cargarDatos();
-  }
-
-  String _formatearFecha(String fechaIso) {
-    final fecha = DateTime.parse(fechaIso);
-    return '${fecha.day} de ${_meses[fecha.month]} de ${fecha.year}';
-  }
-
-  String _formatearHora(String hora) {
-    final partes = hora.split(':');
-    var h = int.parse(partes[0]);
-    final m = partes[1];
-    final periodo = h >= 12 ? 'p. m.' : 'a. m.';
-    h = h % 12;
-    if (h == 0) h = 12;
-    return '$h:$m $periodo';
   }
 
   Future<void> _cargarDatos() async {
@@ -123,13 +104,6 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
     );
   }
 
-  String _iniciales(String nombre) {
-    final partes = nombre.trim().split(RegExp(r'\s+'));
-    if (partes.isEmpty || partes.first.isEmpty) return '';
-    if (partes.length == 1) return partes.first[0].toUpperCase();
-    return (partes.first[0] + partes[1][0]).toUpperCase();
-  }
-
   @override
   Widget build(BuildContext context) {
     if (_cargando) {
@@ -192,7 +166,7 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
             child: CircleAvatar(
               backgroundColor: verdePrincipal,
               child: Text(
-                _iniciales(_nombre),
+                obtenerIniciales(_nombre),
                 style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -269,7 +243,7 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
                                 Text(
                                   _proximaCita == null
                                       ? 'No tienes citas agendadas'
-                                      : '${_formatearFecha(_proximaCita!['fecha'])} · ${_formatearHora(_proximaCita!['hora'])}',
+                                      : '${formatearFechaLarga(_proximaCita!['fecha'])} · ${formatearHora12(_proximaCita!['hora'])}',
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 19,
@@ -412,7 +386,7 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
                             return DataRow(
                               cells: [
                                 DataCell(Text(
-                                    _formatearFecha(consulta['fecha']))),
+                                    formatearFechaLarga(consulta['fecha']))),
                                 DataCell(Text('${consulta['peso']} kg')),
                                 DataCell(Text('${consulta['estatura']} m')),
                                 DataCell(Text('${consulta['genero'] ?? '-'}')),
@@ -485,7 +459,7 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
                                 ),
                                 const SizedBox(height: 6),
                                 Text(
-                                  'Asignado el ${_formatearFecha(_ultimoMenu!['fecha'])}',
+                                  'Asignado el ${formatearFechaLarga(_ultimoMenu!['fecha'])}',
                                   style: const TextStyle(color: Color(0xFF62766D)),
                                 ),
                               ],

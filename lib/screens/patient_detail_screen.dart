@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'consultation_form_screen.dart';
 import 'menu_assignment_screen.dart';
 import 'schedule_appointment_screen.dart';
+import '../utils/formatters.dart';
 
 class PatientDetailScreen extends StatefulWidget {
   final String pacienteId;
@@ -64,13 +65,6 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
     }
   }
 
-  String _iniciales(String nombre) {
-    final partes = nombre.trim().split(RegExp(r'\s+'));
-    if (partes.isEmpty || partes.first.isEmpty) return '?';
-    if (partes.length == 1) return partes.first[0].toUpperCase();
-    return (partes.first[0] + partes[1][0]).toUpperCase();
-  }
-
   @override
   Widget build(BuildContext context) {
     if (_cargando) {
@@ -119,7 +113,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
                             radius: 34,
                             backgroundColor: const Color(0xFFDDF8E8),
                             child: Text(
-                              _iniciales(nombre),
+                              obtenerIniciales(nombre),
                               style: const TextStyle(
                                 color: verde,
                                 fontSize: 22,
@@ -272,8 +266,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
                           ],
                           rows: _historial.map((c) {
                             final fecha = DateTime.parse(c['fecha']);
-                            final fechaTexto =
-                                '${fecha.day.toString().padLeft(2, '0')}/${fecha.month.toString().padLeft(2, '0')}/${fecha.year}';
+                            final fechaTexto = formatearFechaCorta(fecha);
                             return DataRow(cells: [
                               DataCell(Text(fechaTexto)),
                               DataCell(Text('${c['peso']} kg')),

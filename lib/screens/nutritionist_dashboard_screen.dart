@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'patients_screen.dart';
 import '../widgets/logout_button.dart';
+import '../utils/formatters.dart';
 
 class NutritionistDashboardScreen extends StatefulWidget {
   const NutritionistDashboardScreen({super.key});
@@ -132,23 +133,6 @@ class _NutritionistDashboardScreenState
     }
   }
 
-  String _formatearHora(String hora) {
-    final partes = hora.split(':');
-    var h = int.parse(partes[0]);
-    final m = partes[1];
-    final periodo = h >= 12 ? 'p. m.' : 'a. m.';
-    h = h % 12;
-    if (h == 0) h = 12;
-    return '$h:$m $periodo';
-  }
-
-  String _iniciales(String nombre) {
-    final partes = nombre.trim().split(RegExp(r'\s+'));
-    if (partes.isEmpty || partes.first.isEmpty) return '';
-    if (partes.length == 1) return partes.first[0].toUpperCase();
-    return (partes.first[0] + partes[1][0]).toUpperCase();
-  }
-
   void _irAPacientes() {
     Navigator.push(
       context,
@@ -216,7 +200,7 @@ class _NutritionistDashboardScreenState
             child: CircleAvatar(
               backgroundColor: verdePrincipal,
               child: Text(
-                _iniciales(_nombre),
+                obtenerIniciales(_nombre),
                 style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -382,7 +366,7 @@ class _NutritionistDashboardScreenState
                         children: [
                           for (var i = 0; i < _citasDeHoy.length; i++) ...[
                             _AppointmentTile(
-                              hora: _formatearHora(_citasDeHoy[i]['hora']),
+                              hora: formatearHora12(_citasDeHoy[i]['hora']),
                               nombre: _citasDeHoy[i]['nombrePaciente'],
                               tipo: _citasDeHoy[i]['tipo'],
                               estado: _citasDeHoy[i]['estado'] == 'confirmada'

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../utils/formatters.dart';
 
 class AppointmentConfirmationScreen extends StatefulWidget {
   final Map<String, dynamic> cita;
@@ -16,10 +17,6 @@ class _AppointmentConfirmationScreenState
   static const verde = Color(0xFF168B62);
   static const rojo = Color(0xFFB34732);
   static const naranja = Color(0xFFE59819);
-  static const _meses = [
-    '', 'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
-    'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre',
-  ];
 
   late String _estado;
   bool _actualizando = false;
@@ -49,18 +46,8 @@ class _AppointmentConfirmationScreenState
   }
 
   String _formatearFechaHora() {
-    final fecha = DateTime.parse(widget.cita['fecha']);
-    final fechaTexto =
-        '${fecha.day} de ${_meses[fecha.month]} de ${fecha.year}';
-
-    final horaPartes = (widget.cita['hora'] as String).split(':');
-    var h = int.parse(horaPartes[0]);
-    final m = horaPartes[1];
-    final periodo = h >= 12 ? 'p. m.' : 'a. m.';
-    h = h % 12;
-    if (h == 0) h = 12;
-
-    return '$fechaTexto\n$h:$m $periodo';
+    return '${formatearFechaLarga(widget.cita['fecha'])}\n'
+        '${formatearHora12(widget.cita['hora'])}';
   }
 
   Future<void> _actualizarEstado(String nuevoEstado) async {

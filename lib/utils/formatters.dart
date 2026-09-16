@@ -3,7 +3,8 @@ const List<String> mesesEnEspanol = [
   'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre',
 ];
 
-/// Convierte una fecha ISO a texto largo en español. Ej: "16 de septiembre de 2026".
+/// Convierte una fecha ISO (yyyy-MM-dd o timestamp completo) a texto largo en español.
+/// Ejemplo: "16 de septiembre de 2026".
 String formatearFechaLarga(String fechaIso) {
   final fecha = DateTime.parse(fechaIso);
   return '${fecha.day} de ${mesesEnEspanol[fecha.month]} de ${fecha.year}';
@@ -16,7 +17,8 @@ String formatearFechaCorta(DateTime fecha) {
       '${fecha.year}';
 }
 
-/// Convierte una hora "HH:mm:ss" a formato de 12 horas en español.
+/// Convierte una hora en formato "HH:mm:ss" a formato de 12 horas en español.
+/// Ejemplo: "14:30:00" -> "2:30 p. m.".
 String formatearHora12(String hora) {
   final partes = hora.split(':');
   var h = int.parse(partes[0]);

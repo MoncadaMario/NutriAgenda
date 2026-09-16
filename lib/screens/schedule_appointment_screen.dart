@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../utils/formatters.dart';
 
 class ScheduleAppointmentScreen extends StatefulWidget {
   final String pacienteId;
@@ -38,12 +39,6 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
   void dispose() {
     _notasController.dispose();
     super.dispose();
-  }
-
-  String _formatearFecha(DateTime fecha) {
-    return '${fecha.day.toString().padLeft(2, '0')}/'
-        '${fecha.month.toString().padLeft(2, '0')}/'
-        '${fecha.year}';
   }
 
   Future<void> _seleccionarFecha() async {
@@ -314,7 +309,7 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
                                 child: Text(
                                   _fechaSeleccionada == null
                                       ? 'Seleccionar fecha'
-                                      : _formatearFecha(_fechaSeleccionada!),
+                                      : formatearFechaCorta(_fechaSeleccionada!),
                                   style: TextStyle(
                                     color: _fechaSeleccionada == null
                                         ? const Color(0xFF62766D)
