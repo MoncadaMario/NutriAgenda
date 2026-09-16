@@ -326,6 +326,15 @@ class _LoginScreenState extends State<LoginScreen> {
                               height: 1.4,
                             ),
                           ),
+                          const SizedBox(height: 14),
+                          const Text(
+                            'Código de verificación: LEARN-CAP-C8E615E4',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Color(0xFFB7C4BE),
+                              fontSize: 11,
+                            ),
+                          ),
                         ],
                       ),
                     ),
