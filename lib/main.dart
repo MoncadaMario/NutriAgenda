@@ -40,7 +40,7 @@ class NutriAgendaApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFFF7FCF9),
         useMaterial3: true,
       ),
-      home: LoginScreen(),
+      home: const LoginScreen(),
       routes: {
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
