@@ -47,7 +47,7 @@ class _ConsultationFormScreenState extends State<ConsultationFormScreen> {
       return;
     }
 
-    final usuario = _cliente.auth.currentUser;
+    final usuario = Supabase.instance.client.auth.currentUser;
     if (usuario == null) return;
 
     setState(() {
