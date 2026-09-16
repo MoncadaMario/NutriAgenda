@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nutriagenda/screens/register_screen.dart';
+import '../test_helpers.dart';
 
 void main() {
   testWidgets('RegisterScreen muestra el formulario completo', (tester) async {
+    usarVentanaDePruebaGrande(tester);
     await tester.pumpWidget(const MaterialApp(home: RegisterScreen()));
 
     expect(find.text('Crea tu cuenta'), findsOneWidget);
@@ -13,6 +15,7 @@ void main() {
 
   testWidgets('RegisterScreen muestra errores con campos vacios',
       (tester) async {
+    usarVentanaDePruebaGrande(tester);
     await tester.pumpWidget(const MaterialApp(home: RegisterScreen()));
 
     await tester.tap(find.text('Crear cuenta'));
@@ -25,6 +28,7 @@ void main() {
 
   testWidgets('RegisterScreen muestra aviso al marcar nutricionista',
       (tester) async {
+    usarVentanaDePruebaGrande(tester);
     await tester.pumpWidget(const MaterialApp(home: RegisterScreen()));
 
     await tester.tap(find.text('¿Eres nutricionista?'));

@@ -69,7 +69,8 @@ class _AppointmentConfirmationScreenState
     });
 
     try {
-      await Supabase.instance.client.from('appointments')
+      await Supabase.instance.client
+          .from('appointments')
           .update({'estado': nuevoEstado})
           .eq('id', widget.cita['id']);
 
@@ -113,156 +114,154 @@ class _AppointmentConfirmationScreenState
           ),
         ),
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 500),
-            child: Card(
-              elevation: 0,
-              child: Padding(
-                padding: const EdgeInsets.all(30),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CircleAvatar(
-                      radius: 38,
-                      backgroundColor: cancelada
-                          ? const Color(0xFFFFE5E0)
-                          : const Color(0xFFDDF8E8),
-                      child: Icon(
-                        cancelada
-                            ? Icons.cancel_outlined
-                            : confirmada
-                                ? Icons.check_circle_outline
-                                : Icons.calendar_month_rounded,
-                        color: cancelada ? rojo : verde,
-                        size: 40,
-                      ),
-                    ),
-                    const SizedBox(height: 22),
-                    Text(
-                      cancelada
-                          ? 'Cita cancelada'
-                          : confirmada
-                              ? 'Cita confirmada'
-                              : 'Detalle de tu cita',
-                      style: const TextStyle(
-                        color: Color(0xFF173D2D),
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      '${widget.cita['tipo']}\n${_formatearFechaHora()}',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Color(0xFF61766C),
-                        fontSize: 16,
-                        height: 1.5,
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-
-                    if (!cancelada && !confirmada && !puedeConfirmar)
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(14),
-                        margin: const EdgeInsets.only(bottom: 20),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFFFF7E8),
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: const Color(0xFFF7D596)),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 500),
+              child: Card(
+                elevation: 0,
+                child: Padding(
+                  padding: const EdgeInsets.all(30),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CircleAvatar(
+                        radius: 38,
+                        backgroundColor: cancelada
+                            ? const Color(0xFFFFE5E0)
+                            : const Color(0xFFDDF8E8),
+                        child: Icon(
+                          cancelada
+                              ? Icons.cancel_outlined
+                              : confirmada
+                                  ? Icons.check_circle_outline
+                                  : Icons.calendar_month_rounded,
+                          color: cancelada ? rojo : verde,
+                          size: 40,
                         ),
-                        child: const Row(
-                          children: [
-                            Icon(Icons.info_outline_rounded, color: naranja),
-                            SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                'Podrás confirmar tu asistencia 24 horas '
-                                'antes de la cita. Mientras tanto, puedes '
-                                'cancelarla si no vas a poder asistir.',
-                                style: TextStyle(
-                                  color: Color(0xFF765116),
-                                  fontSize: 13,
-                                  height: 1.35,
+                      ),
+                      const SizedBox(height: 22),
+                      Text(
+                        cancelada
+                            ? 'Cita cancelada'
+                            : confirmada
+                                ? 'Cita confirmada'
+                                : 'Detalle de tu cita',
+                        style: const TextStyle(
+                          color: Color(0xFF173D2D),
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        '${widget.cita['tipo']}\n${_formatearFechaHora()}',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Color(0xFF61766C),
+                          fontSize: 16,
+                          height: 1.5,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      if (!cancelada && !confirmada && !puedeConfirmar)
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(14),
+                          margin: const EdgeInsets.only(bottom: 20),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFFF7E8),
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(color: const Color(0xFFF7D596)),
+                          ),
+                          child: const Row(
+                            children: [
+                              Icon(Icons.info_outline_rounded, color: naranja),
+                              SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  'Podrás confirmar tu asistencia 24 horas '
+                                  'antes de la cita. Mientras tanto, puedes '
+                                  'cancelarla si no vas a poder asistir.',
+                                  style: TextStyle(
+                                    color: Color(0xFF765116),
+                                    fontSize: 13,
+                                    height: 1.35,
+                                  ),
                                 ),
                               ),
+                            ],
+                          ),
+                        ),
+                      if (confirmada)
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 20),
+                          child: Text(
+                            'Gracias por confirmar. Tu nutricionista ya lo sabe.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Color(0xFF61766C)),
+                          ),
+                        ),
+                      if (cancelada)
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 20),
+                          child: Text(
+                            'Tu nutricionista será notificada de la cancelación.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Color(0xFF61766C)),
+                          ),
+                        ),
+                      if (!cancelada) ...[
+                        if (puedeConfirmar) ...[
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton.icon(
+                              onPressed: _actualizando
+                                  ? null
+                                  : () => _actualizarEstado('confirmada'),
+                              icon: const Icon(Icons.check_circle_outline),
+                              label: const Text('Confirmar asistencia'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: verde,
+                                foregroundColor: Colors.white,
+                                minimumSize: const Size.fromHeight(52),
+                              ),
                             ),
-                          ],
-                        ),
-                      ),
-
-                    if (confirmada)
-                      const Padding(
-                        padding: EdgeInsets.only(bottom: 20),
-                        child: Text(
-                          'Gracias por confirmar. Tu nutricionista ya lo sabe.',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Color(0xFF61766C)),
-                        ),
-                      ),
-
-                    if (cancelada)
-                      const Padding(
-                        padding: EdgeInsets.only(bottom: 20),
-                        child: Text(
-                          'Tu nutricionista será notificada de la cancelación.',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Color(0xFF61766C)),
-                        ),
-                      ),
-
-                    if (!cancelada) ...[
-                      if (puedeConfirmar) ...[
+                          ),
+                          const SizedBox(height: 12),
+                        ],
                         SizedBox(
                           width: double.infinity,
-                          child: ElevatedButton.icon(
+                          child: OutlinedButton.icon(
                             onPressed: _actualizando
                                 ? null
-                                : () => _actualizarEstado('confirmada'),
-                            icon: const Icon(Icons.check_circle_outline),
-                            label: const Text('Confirmar asistencia'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: verde,
-                              foregroundColor: Colors.white,
+                                : () => _actualizarEstado('cancelada'),
+                            icon: const Icon(Icons.cancel_outlined),
+                            label: const Text('Cancelar cita'),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: rojo,
+                              side: const BorderSide(color: rojo),
                               minimumSize: const Size.fromHeight(52),
                             ),
                           ),
                         ),
-                        const SizedBox(height: 12),
-                      ],
-                      SizedBox(
-                        width: double.infinity,
-                        child: OutlinedButton.icon(
-                          onPressed: _actualizando
-                              ? null
-                              : () => _actualizarEstado('cancelada'),
-                          icon: const Icon(Icons.cancel_outlined),
-                          label: const Text('Cancelar cita'),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: rojo,
-                            side: const BorderSide(color: rojo),
-                            minimumSize: const Size.fromHeight(52),
+                      ] else
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton(
+                            onPressed: () => Navigator.pop(context),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: verde,
+                              side: const BorderSide(color: verde),
+                              minimumSize: const Size.fromHeight(48),
+                            ),
+                            child: const Text('Volver'),
                           ),
                         ),
-                      ),
-                    ] else
-                      SizedBox(
-                        width: double.infinity,
-                        child: OutlinedButton(
-                          onPressed: () => Navigator.pop(context),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: verde,
-                            side: const BorderSide(color: verde),
-                            minimumSize: const Size.fromHeight(48),
-                          ),
-                          child: const Text('Volver'),
-                        ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

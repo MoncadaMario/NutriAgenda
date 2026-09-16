@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nutriagenda/screens/menu_assignment_screen.dart';
+import '../test_helpers.dart';
 
 void main() {
   testWidgets('MenuAssignmentScreen muestra el nombre del paciente',
       (tester) async {
+    usarVentanaDePruebaGrande(tester);
     await tester.pumpWidget(const MaterialApp(
       home: MenuAssignmentScreen(
         pacienteId: 'id-de-prueba',
@@ -17,6 +19,7 @@ void main() {
   });
 
   testWidgets('MenuAssignmentScreen valida campos vacios', (tester) async {
+    usarVentanaDePruebaGrande(tester);
     await tester.pumpWidget(const MaterialApp(
       home: MenuAssignmentScreen(
         pacienteId: 'id-de-prueba',

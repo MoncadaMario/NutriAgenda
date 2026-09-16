@@ -13,7 +13,7 @@ void main() {
     ));
 
     expect(find.textContaining('Paciente de Prueba'), findsWidgets);
-    expect(find.text('Agendar cita'), findsOneWidget);
+    expect(find.widgetWithText(ElevatedButton, 'Agendar cita'), findsOneWidget);
   });
 
   testWidgets('ScheduleAppointmentScreen avisa si falta fecha y hora',
@@ -25,7 +25,7 @@ void main() {
       ),
     ));
 
-    await tester.tap(find.text('Agendar cita'));
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Agendar cita'));
     await tester.pump();
 
     expect(find.text('Selecciona la fecha y la hora de la cita.'),
