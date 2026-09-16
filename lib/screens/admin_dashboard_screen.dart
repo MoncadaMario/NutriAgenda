@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'user_management_screen.dart';
+import '../utils/formatters.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
   const AdminDashboardScreen({super.key});
@@ -60,10 +61,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       if (!mounted) return;
 
       final nombre = miPerfil['nombre'] as String? ?? '';
-      final partes = nombre.trim().split(RegExp(r'\s+'));
-      final iniciales = partes.length >= 2
-          ? (partes[0][0] + partes[1][0]).toUpperCase()
-          : (partes.isNotEmpty ? partes[0][0].toUpperCase() : 'AD');
+      final inicialesCalculadas = obtenerIniciales(nombre);
+      final iniciales = inicialesCalculadas.isEmpty ? 'AD' : inicialesCalculadas;
 
       setState(() {
         _iniciales = iniciales;

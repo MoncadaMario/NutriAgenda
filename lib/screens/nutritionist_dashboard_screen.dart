@@ -151,7 +151,7 @@ class _NutritionistDashboardScreenState
   void _irAPacientes() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => PatientsScreen()),
+      MaterialPageRoute(builder: (context) => const PatientsScreen()),
     );
   }
 

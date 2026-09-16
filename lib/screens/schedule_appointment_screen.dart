@@ -24,8 +24,12 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
   final _formKey = GlobalKey<FormState>();
   final _notasController = TextEditingController();
 
-  String _tipoCita = 'Primera consulta';
-  String _duracion = '60 minutos';
+  static const String _tipoConsultaInicial = 'Primera consulta';
+  static const String _duracionInicial = '60 minutos';
+
+  String _tipoCita = _tipoConsultaInicial;
+  String _duracion = _duracionInicial;
+
   DateTime? _fechaSeleccionada;
   TimeOfDay? _horaSeleccionada;
   bool _guardando = false;
@@ -281,8 +285,8 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
                         ),
                         items: const [
                           DropdownMenuItem(
-                            value: 'Primera consulta',
-                            child: Text('Primera consulta'),
+                            value: _tipoConsultaInicial,
+                            child: Text(_tipoConsultaInicial),
                           ),
                           DropdownMenuItem(
                             value: 'Consulta de seguimiento',
@@ -362,8 +366,8 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
                             child: Text('45 minutos'),
                           ),
                           DropdownMenuItem(
-                            value: '60 minutos',
-                            child: Text('60 minutos'),
+                            value: _duracionInicial,
+                            child: Text(_duracionInicial),
                           ),
                         ],
                         onChanged: (valor) {

@@ -42,9 +42,9 @@ class NutriAgendaApp extends StatelessWidget {
       ),
       home: LoginScreen(),
       routes: {
-        '/login': (context) => LoginScreen(),
-        '/register': (context) => RegisterScreen(),
-        '/forgot-password': (context) => ForgotPasswordScreen(),
+        '/login': (context) => const LoginScreen(),
+        '/register': (context) => const RegisterScreen(),
+        '/forgot-password': (context) => const ForgotPasswordScreen(),
         '/patient-dashboard': (context) =>
             const AuthGuard(child: PatientDashboardScreen()),
         '/nutritionist-dashboard': (context) =>
