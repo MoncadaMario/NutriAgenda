@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'user_management_screen.dart';
 import '../utils/formatters.dart';
+import '../widgets/logout_button.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
   const AdminDashboardScreen({super.key});
@@ -62,7 +63,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
 
       final nombre = miPerfil['nombre'] as String? ?? '';
       final inicialesCalculadas = obtenerIniciales(nombre);
-      final iniciales = inicialesCalculadas.isEmpty ? 'AD' : inicialesCalculadas;
+      final iniciales =
+          inicialesCalculadas.isEmpty ? 'AD' : inicialesCalculadas;
 
       setState(() {
         _iniciales = iniciales;
@@ -112,19 +114,15 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           style: TextStyle(color: oscuro, fontWeight: FontWeight.bold),
         ),
         actions: [
-          IconButton(
-            tooltip: 'Cerrar sesión',
-            onPressed: () async {
+          LogoutButton(
+            color: oscuro,
+            onLogout: () async {
               await Supabase.instance.client.auth.signOut();
               if (context.mounted) {
                 Navigator.of(context)
                     .pushNamedAndRemoveUntil('/login', (route) => false);
               }
             },
-            icon: const Icon(
-              Icons.logout_rounded,
-              color: oscuro,
-            ),
           ),
           Padding(
             padding: const EdgeInsets.only(right: 20),

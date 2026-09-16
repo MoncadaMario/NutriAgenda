@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'patients_screen.dart';
+import '../widgets/logout_button.dart';
 
 class NutritionistDashboardScreen extends StatefulWidget {
   const NutritionistDashboardScreen({super.key});
@@ -190,19 +191,15 @@ class _NutritionistDashboardScreenState
           ],
         ),
         actions: [
-          IconButton(
-            tooltip: 'Cerrar sesión',
-            onPressed: () async {
+          LogoutButton(
+            color: verdeOscuro,
+            onLogout: () async {
               await Supabase.instance.client.auth.signOut();
               if (context.mounted) {
                 Navigator.of(context)
                     .pushNamedAndRemoveUntil('/login', (route) => false);
               }
             },
-            icon: const Icon(
-              Icons.logout_rounded,
-              color: verdeOscuro,
-            ),
           ),
           IconButton(
             tooltip: 'Notificaciones',
