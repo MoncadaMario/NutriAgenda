@@ -1,0 +1,349 @@
+[
+  {
+    "generar_export_json": {
+      "motor": "postgres",
+      "tablas": [
+        {
+          "filas": 0,
+          "nombre": "appointments",
+          "indices": [
+            "appointments_pkey"
+          ],
+          "columnas": [
+            {
+              "pk": true,
+              "nulo": false,
+              "tipo": "uuid",
+              "nombre": "id"
+            },
+            {
+              "pk": false,
+              "nulo": false,
+              "tipo": "uuid",
+              "nombre": "paciente_id"
+            },
+            {
+              "pk": false,
+              "nulo": true,
+              "tipo": "uuid",
+              "nombre": "nutricionista_id"
+            },
+            {
+              "pk": false,
+              "nulo": false,
+              "tipo": "text",
+              "nombre": "tipo"
+            },
+            {
+              "pk": false,
+              "nulo": false,
+              "tipo": "text",
+              "nombre": "duracion"
+            },
+            {
+              "pk": false,
+              "nulo": false,
+              "tipo": "date",
+              "nombre": "fecha"
+            },
+            {
+              "pk": false,
+              "nulo": false,
+              "tipo": "time without time zone",
+              "nombre": "hora"
+            },
+            {
+              "pk": false,
+              "nulo": true,
+              "tipo": "text",
+              "nombre": "notas"
+            },
+            {
+              "pk": false,
+              "nulo": true,
+              "tipo": "text",
+              "nombre": "estado"
+            },
+            {
+              "pk": false,
+              "nulo": true,
+              "tipo": "timestamp with time zone",
+              "nombre": "created_at"
+            }
+          ],
+          "relaciones": [
+            {
+              "columna": "nutricionista_id",
+              "referencia": "profiles.id"
+            },
+            {
+              "columna": "paciente_id",
+              "referencia": "profiles.id"
+            }
+          ],
+          "politicas_rls": [
+            "Crear citas",
+            "Ver mis citas"
+          ]
+        },
+        {
+          "filas": 0,
+          "nombre": "consultations",
+          "indices": [
+            "consultations_pkey"
+          ],
+          "columnas": [
+            {
+              "pk": true,
+              "nulo": false,
+              "tipo": "uuid",
+              "nombre": "id"
+            },
+            {
+              "pk": false,
+              "nulo": false,
+              "tipo": "uuid",
+              "nombre": "paciente_id"
+            },
+            {
+              "pk": false,
+              "nulo": false,
+              "tipo": "uuid",
+              "nombre": "nutricionista_id"
+            },
+            {
+              "pk": false,
+              "nulo": true,
+              "tipo": "numeric",
+              "nombre": "peso"
+            },
+            {
+              "pk": false,
+              "nulo": true,
+              "tipo": "numeric",
+              "nombre": "estatura"
+            },
+            {
+              "pk": false,
+              "nulo": true,
+              "tipo": "text",
+              "nombre": "genero"
+            },
+            {
+              "pk": false,
+              "nulo": true,
+              "tipo": "integer",
+              "nombre": "edad"
+            },
+            {
+              "pk": false,
+              "nulo": true,
+              "tipo": "numeric",
+              "nombre": "imc"
+            },
+            {
+              "pk": false,
+              "nulo": true,
+              "tipo": "numeric",
+              "nombre": "porcentaje_grasa"
+            },
+            {
+              "pk": false,
+              "nulo": true,
+              "tipo": "text",
+              "nombre": "observaciones"
+            },
+            {
+              "pk": false,
+              "nulo": true,
+              "tipo": "timestamp with time zone",
+              "nombre": "fecha"
+            }
+          ],
+          "relaciones": [
+            {
+              "columna": "nutricionista_id",
+              "referencia": "profiles.id"
+            },
+            {
+              "columna": "paciente_id",
+              "referencia": "profiles.id"
+            }
+          ],
+          "politicas_rls": [
+            "Crear consultas",
+            "Ver mis consultas"
+          ]
+        },
+        {
+          "filas": 0,
+          "nombre": "menus",
+          "indices": [
+            "menus_pkey"
+          ],
+          "columnas": [
+            {
+              "pk": true,
+              "nulo": false,
+              "tipo": "uuid",
+              "nombre": "id"
+            },
+            {
+              "pk": false,
+              "nulo": false,
+              "tipo": "uuid",
+              "nombre": "paciente_id"
+            },
+            {
+              "pk": false,
+              "nulo": false,
+              "tipo": "uuid",
+              "nombre": "nutricionista_id"
+            },
+            {
+              "pk": false,
+              "nulo": true,
+              "tipo": "text",
+              "nombre": "contenido"
+            },
+            {
+              "pk": false,
+              "nulo": true,
+              "tipo": "text",
+              "nombre": "pdf_url"
+            },
+            {
+              "pk": false,
+              "nulo": true,
+              "tipo": "timestamp with time zone",
+              "nombre": "fecha"
+            }
+          ],
+          "relaciones": [
+            {
+              "columna": "nutricionista_id",
+              "referencia": "profiles.id"
+            },
+            {
+              "columna": "paciente_id",
+              "referencia": "profiles.id"
+            }
+          ],
+          "politicas_rls": [
+            "Crear menus",
+            "Ver mis menus"
+          ]
+        },
+        {
+          "filas": 0,
+          "nombre": "notificaciones",
+          "indices": [
+            "notificaciones_pkey",
+            "idx_notificaciones_paciente_leida"
+          ],
+          "columnas": [
+            {
+              "pk": true,
+              "nulo": false,
+              "tipo": "uuid",
+              "nombre": "id"
+            },
+            {
+              "pk": false,
+              "nulo": false,
+              "tipo": "uuid",
+              "nombre": "paciente_id"
+            },
+            {
+              "pk": false,
+              "nulo": false,
+              "tipo": "text",
+              "nombre": "mensaje"
+            },
+            {
+              "pk": false,
+              "nulo": false,
+              "tipo": "boolean",
+              "nombre": "leida"
+            },
+            {
+              "pk": false,
+              "nulo": true,
+              "tipo": "timestamp with time zone",
+              "nombre": "created_at"
+            }
+          ],
+          "relaciones": [
+            {
+              "columna": "paciente_id",
+              "referencia": "profiles.id"
+            }
+          ],
+          "politicas_rls": [
+            "Ver mis notificaciones"
+          ]
+        },
+        {
+          "filas": 3,
+          "nombre": "profiles",
+          "indices": [
+            "profiles_pkey"
+          ],
+          "columnas": [
+            {
+              "pk": true,
+              "nulo": false,
+              "tipo": "uuid",
+              "nombre": "id"
+            },
+            {
+              "pk": false,
+              "nulo": false,
+              "tipo": "text",
+              "nombre": "nombre"
+            },
+            {
+              "pk": false,
+              "nulo": false,
+              "tipo": "text",
+              "nombre": "correo"
+            },
+            {
+              "pk": false,
+              "nulo": true,
+              "tipo": "text",
+              "nombre": "telefono"
+            },
+            {
+              "pk": false,
+              "nulo": false,
+              "tipo": "text",
+              "nombre": "rol"
+            },
+            {
+              "pk": false,
+              "nulo": false,
+              "tipo": "text",
+              "nombre": "estado"
+            },
+            {
+              "pk": false,
+              "nulo": true,
+              "tipo": "timestamp with time zone",
+              "nombre": "created_at"
+            }
+          ],
+          "relaciones": [],
+          "politicas_rls": [
+            "Administradores actualizan perfiles",
+            "Administradores ven todos los perfiles",
+            "Editar mi perfil",
+            "Nutricionistas y admin ven pacientes",
+            "Ver mi perfil"
+          ]
+        }
+      ],
+      "generado_at": "2026-09-16T04:38:27Z"
+    }
+  }
+]
