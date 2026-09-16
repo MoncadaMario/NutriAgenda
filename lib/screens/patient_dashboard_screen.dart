@@ -166,6 +166,21 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
           ],
         ),
         actions: [
+                  actions: [
+          IconButton(
+            tooltip: 'Cerrar sesión',
+            onPressed: () async {
+              await Supabase.instance.client.auth.signOut();
+              if (context.mounted) {
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil('/login', (route) => false);
+              }
+            },
+            icon: const Icon(
+              Icons.logout_rounded,
+              color: verdeOscuro,
+            ),
+          ),
           IconButton(
             tooltip: 'Notificaciones',
             onPressed: () {

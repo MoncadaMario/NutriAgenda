@@ -112,6 +112,21 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           style: TextStyle(color: oscuro, fontWeight: FontWeight.bold),
         ),
         actions: [
+                  actions: [
+          IconButton(
+            tooltip: 'Cerrar sesión',
+            onPressed: () async {
+              await Supabase.instance.client.auth.signOut();
+              if (context.mounted) {
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil('/login', (route) => false);
+              }
+            },
+            icon: const Icon(
+              Icons.logout_rounded,
+              color: oscuro,
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.only(right: 20),
             child: CircleAvatar(
