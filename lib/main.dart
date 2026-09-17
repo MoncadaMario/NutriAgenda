@@ -11,6 +11,7 @@ import 'screens/nutritionist_dashboard_screen.dart';
 import 'screens/patient_dashboard_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/user_management_screen.dart';
+import 'screens/patients_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,6 +54,8 @@ class NutriAgendaApp extends StatelessWidget {
             const AuthGuard(child: AdminDashboardScreen()),
         '/user-management': (context) =>
             const AuthGuard(child: UserManagementScreen()),
+        '/patients': (context) => 
+            const AuthGuard(child: PatientsScreen()),
       },
       onUnknownRoute: (settings) {
         return MaterialPageRoute(
