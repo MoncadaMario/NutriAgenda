@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NutriAgenda — Presentación del producto</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥗</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7FCF9;
+    --bg-raised: #FFFFFF;
+    --ink: #123526;
+    --ink-soft: #4C6A5C;
+    --brand: #168B62;
+    --brand-deep: #0E5A40;
+    --sage: #E3F4EA;
+    --gold: #B9812F;
+    --line: #D7E8DE;
+    --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0E1B15;
+      --bg-raised: #142821;
+      --ink: #EAF6EF;
+      --ink-soft: #A9C4B7;
+      --brand: #3CC495;
+      --brand-deep: #6EE0B4;
+      --sage: #1B3129;
+      --gold: #E0A44E;
+      --line: #234337;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0E1B15;
+    --bg-raised: #142821;
+    --ink: #EAF6EF;
+    --ink-soft: #A9C4B7;
+    --brand: #3CC495;
+    --brand-deep: #6EE0B4;
+    --sage: #1B3129;
+    --gold: #E0A44E;
+    --line: #234337;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--brand-deep); }
+  img, svg { max-width: 100%; }
+
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 28px; }
+  .prose { max-width: 66ch; }
+
+  header.top {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 28px; max-width: 1120px; margin: 0 auto;
+    gap: 16px; flex-wrap: wrap;
+  }
+  .brand-mark {
+    font-family: var(--font-display); font-weight: 600; font-size: 20px;
+    display: flex; align-items: center; gap: 8px; white-space: nowrap;
+  }
+  .brand-mark .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--brand); display: inline-block; }
+  nav.sections {
+    display: flex; gap: 22px; flex-wrap: wrap; font-size: 14.5px;
+  }
+  nav.sections a { color: var(--ink-soft); text-decoration: none; }
+  nav.sections a:hover { color: var(--brand-deep); }
+
+  section { padding: 76px 0; border-bottom: 1px solid var(--line); }
+  section:last-of-type { border-bottom: none; }
+
+  h1, h2, h3 { font-family: var(--font-display); font-weight: 600; margin: 0 0 .5em; letter-spacing: -0.01em; }
+  h2 { font-size: clamp(28px, 4vw, 38px); color: var(--ink); }
+  h2 .kicker { display: block; font-family: var(--font-body); font-weight: 600; font-size: 14.5px; color: var(--brand-deep); margin-bottom: 10px; letter-spacing: 0; }
+  p { color: var(--ink-soft); }
+  p.lede { color: var(--ink); font-size: 19px; }
+
+  /* Hero */
+  .hero { padding-top: 72px; padding-bottom: 60px; }
+  .hero-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 56px; align-items: center; }
+  @media (max-width: 860px) { .hero-grid { grid-template-columns: 1fr; } }
+  .hero h1 { font-size: clamp(36px, 6vw, 58px); line-height: 1.05; margin-bottom: 22px; }
+  .hero .lede { max-width: 52ch; }
+  .cta-row { display: flex; gap: 14px; margin-top: 30px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 22px; border-radius: 10px; font-weight: 600; font-size: 15px;
+    text-decoration: none; border: 1px solid transparent;
+  }
+  .btn.primary { background: var(--brand); color: #fff; }
+  .btn.primary:hover { background: var(--brand-deep); }
+  .btn.ghost { border-color: var(--line); color: var(--ink); }
+  .btn.ghost:hover { border-color: var(--brand); color: var(--brand-deep); }
+
+  /* Feature rows */
+  .feature-row {
+    display: grid; grid-template-columns: 56px 1fr; gap: 18px;
+    padding: 22px 0; border-top: 1px solid var(--line);
+  }
+  .feature-row:last-child { border-bottom: 1px solid var(--line); }
+  .feature-row .ico { width: 44px; height: 44px; }
+  .feature-row h3 { font-size: 19px; margin-bottom: 4px; }
+  .feature-row p { margin: 0; font-size: 15.5px; }
+
+  /* Architecture */
+  .arch-figure { background: var(--bg-raised); border: 1px solid var(--line); border-radius: 16px; padding: 24px; margin: 30px 0; overflow-x: auto; }
+
+  /* Tech groups */
+  .tech-groups { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 34px; }
+  @media (max-width: 760px) { .tech-groups { grid-template-columns: 1fr; } }
+  .tech-group h4 { font-size: 13.5px; text-transform: none; color: var(--brand-deep); font-weight: 700; margin: 0 0 12px; }
+  .tech-group ul { list-style: none; margin: 0; padding: 0; }
+  .tech-group li { padding: 9px 0; border-top: 1px solid var(--line); font-size: 15px; }
+  .tech-group li:first-child { border-top: none; }
+  .tech-group li b { color: var(--ink); }
+
+  /* Manual steps */
+  .role-tabs { display: flex; gap: 10px; margin: 28px 0 24px; flex-wrap: wrap; }
+  .role-pill { padding: 8px 16px; border-radius: 999px; background: var(--sage); font-size: 14.5px; font-weight: 600; color: var(--brand-deep); }
+  ol.steps { list-style: none; margin: 0; padding: 0; counter-reset: step; }
+  ol.steps li {
+    counter-increment: step;
+    display: grid; grid-template-columns: 40px 1fr; gap: 16px;
+    padding: 16px 0; border-top: 1px solid var(--line);
+  }
+  ol.steps li:first-child { border-top: none; }
+  ol.steps li::before {
+    content: counter(step);
+    font-family: var(--font-display); font-weight: 600; font-size: 20px;
+    color: var(--brand);
+  }
+  ol.steps h4 { margin: 0 0 3px; font-size: 16px; }
+  ol.steps p { margin: 0; font-size: 15px; }
+
+  /* Client / author */
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+  @media (max-width: 760px) { .split { grid-template-columns: 1fr; } }
+
+  footer {
+    padding: 46px 0 60px;
+    color: var(--ink-soft); font-size: 14px;
+  }
+  .verify {
+    display: inline-block; margin-top: 18px; padding: 10px 14px;
+    background: var(--sage); border-radius: 8px; font-family: monospace;
+    font-size: 13px; color: var(--brand-deep); letter-spacing: .02em;
+  }
+  .foot-links a { color: var(--ink-soft); margin-right: 18px; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="topbar">
+    <div class="brand-mark"><span class="dot"></span> NutriAgenda</div>
+    <nav class="sections">
+      <a href="#problema">Problema</a>
+      <a href="#solucion">Solución</a>
+      <a href="#funcionalidades">Funcionalidades</a>
+      <a href="#arquitectura">Arquitectura</a>
+      <a href="#tecnologias">Tecnologías</a>
+      <a href="#manual">Manual</a>
+      <a href="#cliente">Cliente</a>
+      <a href="#autor">Autor</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <h1>La agenda de tu consultorio de nutrición, en un solo lugar.</h1>
+      <p class="lede">NutriAgenda reemplaza las hojas de cálculo, los mensajes de WhatsApp y las libretas de papel que una nutricionista independiente usa hoy para llevar el control de sus pacientes, con un sistema web donde cada cita, cada consulta y cada menú queda ordenado y accesible desde cualquier dispositivo.</p>
+      <div class="cta-row">
+        <a class="btn primary" href="https://nutri-agenda-amber.vercel.app" target="_blank" rel="noopener">Ver el producto en vivo</a>
+        <a class="btn ghost" href="https://github.com/MoncadaMario/NutriAgenda" target="_blank" rel="noopener">Ver el código en GitHub</a>
+      </div>
+    </div>
+    <div>
+      <svg viewBox="0 0 320 280" role="img" aria-label="Ilustración de una agenda organizada">
+        <rect x="20" y="30" width="220" height="230" rx="18" fill="var(--bg-raised)" stroke="var(--line)" stroke-width="2"/>
+        <rect x="20" y="30" width="220" height="46" rx="18" fill="var(--brand)"/>
+        <rect x="20" y="58" width="220" height="18" fill="var(--brand)"/>
+        <circle cx="48" cy="53" r="6" fill="#fff" opacity=".85"/>
+        <circle cx="68" cy="53" r="6" fill="#fff" opacity=".6"/>
+        <circle cx="88" cy="53" r="6" fill="#fff" opacity=".4"/>
+        <g fill="none" stroke="var(--line)" stroke-width="2">
+          <line x1="40" y1="104" x2="220" y2="104"/>
+          <line x1="40" y1="138" x2="220" y2="138"/>
+          <line x1="40" y1="172" x2="220" y2="172"/>
+          <line x1="40" y1="206" x2="220" y2="206"/>
+        </g>
+        <rect x="40" y="90" width="130" height="16" rx="4" fill="var(--sage)"/>
+        <rect x="40" y="124" width="90" height="16" rx="4" fill="var(--sage)"/>
+        <rect x="40" y="158" width="150" height="16" rx="4" fill="var(--sage)"/>
+        <circle cx="192" cy="98" r="9" fill="var(--brand)"/>
+        <path d="M188 98 l3 3 l6 -7" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="150" cy="132" r="9" fill="var(--gold)"/>
+        <path d="M146 132 l3 3 l6 -7" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="210" cy="166" r="9" fill="var(--brand)"/>
+        <path d="M206 166 l3 3 l6 -7" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="230" cy="220" r="42" fill="var(--sage)"/>
+        <path d="M230 200 c-14 0 -24 10 -24 22 c0 14 24 30 24 30 s24 -16 24 -30 c0 -12 -10 -22 -24 -22 z" fill="var(--brand)" opacity=".9"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section id="problema">
+  <div class="wrap prose">
+    <h2><span class="kicker">Problema</span>Gestionar pacientes a mano no escala</h2>
+    <p>Una nutricionista que trabaja de forma independiente suele empezar con lo que tiene a mano: una hoja de Excel para las citas, un cuaderno para anotar el peso y las medidas de cada consulta, y WhatsApp para enviar el menú semanal. Funciona mientras hay pocos pacientes, pero cada nueva persona que se suma multiplica el trabajo administrativo: buscar el historial de alguien implica revisar hojas viejas, coordinar una cita nueva significa cruzar mensajes de ida y vuelta, y no existe una forma sencilla de que el propio paciente consulte su progreso sin tener que preguntarlo.</p>
+    <p>El riesgo no es solo de tiempo perdido. La información sensible de salud queda dispersa en archivos sin control de acceso real, y no hay manera de distinguir quién puede ver los datos de quién a medida que el consultorio crece y eventualmente suma más de un profesional.</p>
+  </div>
+</section>
+
+<section id="solucion" style="background:var(--sage)">
+  <div class="wrap prose">
+    <h2><span class="kicker">Solución</span>Un sistema, tres roles, un solo lugar</h2>
+    <p>NutriAgenda centraliza toda esa operación en una aplicación web con tres tipos de acceso: el paciente ve sus propias citas, su historial de consultas y el menú que le asignaron; la nutricionista gestiona su lista de pacientes, registra cada consulta con sus datos reales (peso, estatura, IMC, porcentaje de grasa) y agenda las próximas citas; y un administrador supervisa el conjunto, aprueba nuevas cuentas de nutricionistas y gestiona los roles de todos los usuarios.</p>
+    <p>Cada quien ve exactamente lo que le corresponde, no porque la interfaz lo oculte con buen gusto, sino porque el propio motor de base de datos aplica esas reglas de acceso — así que ni siquiera manipulando la aplicación se puede ver información ajena.</p>
+  </div>
+</section>
+
+<section id="funcionalidades">
+  <div class="wrap">
+    <h2 class="prose"><span class="kicker">Funcionalidades</span>Lo que resuelve hoy</h2>
+
+    <div class="feature-row">
+      <svg class="ico" viewBox="0 0 44 44"><rect x="4" y="4" width="36" height="36" rx="10" fill="var(--sage)"/><path d="M14 22h16M22 14v16" stroke="var(--brand-deep)" stroke-width="2.5" stroke-linecap="round"/></svg>
+      <div><h3>Registro y roles automáticos</h3><p>Cualquier persona se registra como paciente o nutricionista; un disparador en la base de datos crea su perfil con el rol correcto al instante, sin pasos manuales.</p></div>
+    </div>
+    <div class="feature-row">
+      <svg class="ico" viewBox="0 0 44 44"><rect x="4" y="4" width="36" height="36" rx="10" fill="var(--sage)"/><rect x="12" y="12" width="20" height="20" rx="3" fill="none" stroke="var(--brand-deep)" stroke-width="2.5"/><path d="M12 19h20" stroke="var(--brand-deep)" stroke-width="2.5"/></svg>
+      <div><h3>Agenda de citas</h3><p>La nutricionista agenda las citas de sus pacientes con tipo, duración y notas; el paciente puede cancelarlas o confirmarlas dentro de las 24 horas previas.</p></div>
+    </div>
+    <div class="feature-row">
+      <svg class="ico" viewBox="0 0 44 44"><rect x="4" y="4" width="36" height="36" rx="10" fill="var(--sage)"/><path d="M14 30V16a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14l-4-3-4 3-4-3-4 3z" fill="none" stroke="var(--brand-deep)" stroke-width="2.2"/></svg>
+      <div><h3>Historial de consultas</h3><p>Cada consulta registra peso, estatura, edad, género, IMC y porcentaje de grasa, y queda visible como historial ordenado para el paciente y su nutricionista.</p></div>
+    </div>
+    <div class="feature-row">
+      <svg class="ico" viewBox="0 0 44 44"><rect x="4" y="4" width="36" height="36" rx="10" fill="var(--sage)"/><circle cx="22" cy="22" r="9" fill="none" stroke="var(--brand-deep)" stroke-width="2.5"/><path d="M22 16v6l4 3" stroke="var(--brand-deep)" stroke-width="2.2" stroke-linecap="round"/></svg>
+      <div><h3>Notificaciones</h3><p>Al crear una cita, un disparador de base de datos genera automáticamente una notificación para el paciente, sin lógica extra del lado de la aplicación.</p></div>
+    </div>
+    <div class="feature-row">
+      <svg class="ico" viewBox="0 0 44 44"><rect x="4" y="4" width="36" height="36" rx="10" fill="var(--sage)"/><path d="M14 14h16v16H14z" fill="none" stroke="var(--brand-deep)" stroke-width="2.2"/><circle cx="22" cy="22" r="3.5" fill="var(--brand-deep)"/></svg>
+      <div><h3>Panel de administración</h3><p>Aprobación de cuentas de nutricionistas nuevas, cambio de roles y visión general de usuarios, pacientes y citas del mes.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="arquitectura" style="background:var(--sage)">
+  <div class="wrap">
+    <h2 class="prose"><span class="kicker">Arquitectura</span>Cómo está construido por dentro</h2>
+    <p class="prose">NutriAgenda es un cliente de Flutter Web que nunca decide la seguridad por su cuenta: toda regla de acceso vive en la base de datos, no en la interfaz. El cliente se comunica directamente con Supabase para autenticar usuarios y leer o escribir datos, y se sirve desde Vercel, que además aplica los headers de seguridad y protege las rutas privadas antes de que la aplicación cargue.</p>
+
+    <div class="arch-figure">
+      <svg viewBox="0 0 760 260" role="img" aria-label="Diagrama de arquitectura: cliente Flutter, Vercel y Supabase" style="width:100%;height:auto;min-width:560px">
+        <defs>
+          <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="var(--brand-deep)"/></marker>
+        </defs>
+        <g font-family="Inter, sans-serif">
+          <rect x="30" y="70" width="210" height="120" rx="14" fill="var(--bg-raised)" stroke="var(--brand)" stroke-width="2"/>
+          <text x="135" y="105" text-anchor="middle" font-weight="700" font-size="16" fill="var(--ink)">Flutter Web</text>
+          <text x="135" y="128" text-anchor="middle" font-size="12.5" fill="var(--ink-soft)">Login · Dashboards</text>
+          <text x="135" y="146" text-anchor="middle" font-size="12.5" fill="var(--ink-soft)">Citas · Consultas</text>
+          <text x="135" y="164" text-anchor="middle" font-size="12.5" fill="var(--ink-soft)">Menús · Roles</text>
+
+          <rect x="30" y="30" width="700" height="200" rx="18" fill="none" stroke="var(--line)" stroke-width="2" stroke-dasharray="5 5"/>
+          <text x="46" y="22" font-size="12.5" fill="var(--ink-soft)" font-weight="600">VERCEL — hosting, middleware, CI/CD</text>
+
+          <rect x="290" y="30" width="180" height="70" rx="12" fill="var(--bg-raised)" stroke="var(--line)" stroke-width="2"/>
+          <text x="380" y="58" text-anchor="middle" font-weight="700" font-size="14" fill="var(--ink)">Middleware</text>
+          <text x="380" y="78" text-anchor="middle" font-size="12" fill="var(--ink-soft)">Protege rutas sin sesión</text>
+
+          <rect x="510" y="70" width="220" height="120" rx="14" fill="var(--bg-raised)" stroke="var(--brand)" stroke-width="2"/>
+          <text x="620" y="105" text-anchor="middle" font-weight="700" font-size="16" fill="var(--ink)">Supabase</text>
+          <text x="620" y="128" text-anchor="middle" font-size="12.5" fill="var(--ink-soft)">Auth (correo / contraseña)</text>
+          <text x="620" y="146" text-anchor="middle" font-size="12.5" fill="var(--ink-soft)">PostgreSQL</text>
+          <text x="620" y="164" text-anchor="middle" font-size="12.5" fill="var(--ink-soft)">Row Level Security</text>
+
+          <line x1="240" y1="130" x2="505" y2="130" stroke="var(--brand-deep)" stroke-width="2" marker-end="url(#arrow)"/>
+          <text x="372" y="120" text-anchor="middle" font-size="11.5" fill="var(--brand-deep)">peticiones autenticadas</text>
+        </g>
+      </svg>
+    </div>
+
+    <p class="prose">Las políticas de Row Level Security son la pieza clave: definen, fila por fila, qué usuario puede leer o escribir cada registro según su rol, de modo que aunque alguien intercepte una petición y la modifique, la base de datos la rechaza si no cumple la política. El middleware de Vercel añade una segunda capa a nivel de servidor, redirigiendo al login cualquier intento de entrar a una ruta privada sin una sesión activa, antes de que el cliente llegue a cargar.</p>
+  </div>
+</section>
+
+<section id="tecnologias">
+  <div class="wrap">
+    <h2 class="prose"><span class="kicker">Tecnologías</span>Con qué está hecho</h2>
+    <div class="tech-groups">
+      <div class="tech-group">
+        <h4>Cliente</h4>
+        <ul>
+          <li><b>Flutter</b> — interfaz y lógica de la app</li>
+          <li><b>Dart</b> — lenguaje del cliente</li>
+          <li>Compilado a Flutter Web</li>
+        </ul>
+      </div>
+      <div class="tech-group">
+        <h4>Backend</h4>
+        <ul>
+          <li><b>Supabase Auth</b> — identidad de usuarios</li>
+          <li><b>PostgreSQL</b> — base de datos relacional</li>
+          <li><b>Row Level Security</b> — control de acceso por fila</li>
+        </ul>
+      </div>
+      <div class="tech-group">
+        <h4>Infraestructura</h4>
+        <ul>
+          <li><b>Vercel</b> — hosting y middleware</li>
+          <li><b>GitHub Actions</b> — CI: análisis, pruebas y cobertura</li>
+          <li><b>SonarCloud</b> — calidad de código continua</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="manual" style="background:var(--sage)">
+  <div class="wrap prose">
+    <h2><span class="kicker">Manual de uso</span>Primeros pasos</h2>
+    <div class="role-tabs">
+      <span class="role-pill">Paciente</span>
+      <span class="role-pill">Nutricionista</span>
+      <span class="role-pill">Administrador</span>
+    </div>
+    <ol class="steps">
+      <li>
+        <div>
+          <h4>Regístrate</h4>
+          <p>Desde la pantalla de inicio, elige "Registrarme como nuevo usuario" e indica si eres paciente o nutricionista. Tu perfil se crea automáticamente con ese rol.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h4>Inicia sesión</h4>
+          <p>Con tu correo y contraseña entras directo a tu panel. Si olvidaste tu contraseña, puedes pedir un enlace de recuperación desde la misma pantalla.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h4>Si eres paciente: consulta tu progreso</h4>
+          <p>Tu panel muestra tu próxima cita, el resumen de tu última consulta (peso, IMC, % de grasa) y el menú que te asignó tu nutricionista.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h4>Si eres nutricionista: atiende a tus pacientes</h4>
+          <p>Entra a "Mis pacientes", elige uno y desde su perfil registra una consulta nueva, asígnale un menú o agéndale una cita.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h4>Si eres administrador: gestiona la plataforma</h4>
+          <p>Aprueba a las nutricionistas nuevas que quedaron pendientes de pago y ajusta el rol de cualquier usuario desde "Gestionar usuarios".</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section id="cliente">
+  <div class="wrap split">
+    <div>
+      <h2><span class="kicker">Cliente</span>¿Para quién es esto?</h2>
+      <p>NutriAgenda está pensado para la nutricionista independiente: alguien que atiende su propia cartera de pacientes, sin un equipo de desarrollo detrás, y que hoy resuelve la gestión de su consultorio con herramientas genéricas que no fueron diseñadas para datos de salud. No es un producto pensado para una sola persona ni para un encargo puntual — la idea es que cualquier profesional en esa situación pueda registrarse y empezar a usarlo directamente, sin configuración adicional de su parte.</p>
+    </div>
+    <div>
+      <svg viewBox="0 0 320 160" role="img" aria-label="Tres roles: paciente, nutricionista y administrador">
+        <g font-family="Inter, sans-serif" font-size="12.5" fill="var(--ink-soft)" text-anchor="middle">
+          <circle cx="60" cy="55" r="34" fill="var(--sage)"/>
+          <circle cx="60" cy="44" r="12" fill="var(--brand)"/>
+          <path d="M38 78c4-14 16-20 22-20s18 6 22 20" fill="var(--brand)"/>
+          <text x="60" y="112">Paciente</text>
+
+          <circle cx="160" cy="55" r="34" fill="var(--sage)"/>
+          <circle cx="160" cy="44" r="12" fill="var(--gold)"/>
+          <path d="M138 78c4-14 16-20 22-20s18 6 22 20" fill="var(--gold)"/>
+          <text x="160" y="112">Nutricionista</text>
+
+          <circle cx="260" cy="55" r="34" fill="var(--sage)"/>
+          <circle cx="260" cy="44" r="12" fill="var(--brand-deep)"/>
+          <path d="M238 78c4-14 16-20 22-20s18 6 22 20" fill="var(--brand-deep)"/>
+          <text x="260" y="112">Administrador</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<footer id="autor">
+  <div class="wrap">
+    <h2 style="font-size:22px">Autor</h2>
+    <p>Proyecto desarrollado por <b style="color:var(--ink)">Mario Moncada</b> como parte de su trabajo de curso, cubriendo desde el diseño de la base de datos y sus políticas de seguridad hasta el despliegue en producción y el pipeline de integración continua.</p>
+    <div class="foot-links">
+      <a href="https://nutri-agenda-amber.vercel.app" target="_blank" rel="noopener">Producto en vivo →</a>
+      <a href="https://github.com/MoncadaMario/NutriAgenda" target="_blank" rel="noopener">Repositorio en GitHub →</a>
+    </div>
+    <div class="verify">Código de verificación: LEARN-CAP-C8E615E4</div>
+  </div>
+</footer>
+
+</body>
+</html>
