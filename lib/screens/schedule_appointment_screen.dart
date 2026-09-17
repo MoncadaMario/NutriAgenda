@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../utils/formatters.dart';
+import '../widgets/campo_decoration.dart';
 
 class ScheduleAppointmentScreen extends StatefulWidget {
   final String pacienteId;
@@ -142,33 +143,6 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
     }
   }
 
-  InputDecoration _estiloCampo({
-    required String texto,
-    required IconData icono,
-  }) {
-    return InputDecoration(
-      labelText: texto,
-      prefixIcon: Icon(icono, color: verdePrincipal),
-      filled: true,
-      fillColor: const Color(0xFFFCFFFD),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: Color(0xFFD4E8DC)),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: Color(0xFFD4E8DC)),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(
-          color: verdePrincipal,
-          width: 2,
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -274,7 +248,7 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
                       const SizedBox(height: 18),
                       DropdownButtonFormField<String>(
                         value: _tipoCita,
-                        decoration: _estiloCampo(
+                        decoration: estiloCampoTexto(
                           texto: 'Tipo de cita',
                           icono: Icons.medical_services_outlined,
                         ),
@@ -302,7 +276,7 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
                               onTap: _seleccionarFecha,
                               borderRadius: BorderRadius.circular(14),
                               child: InputDecorator(
-                                decoration: _estiloCampo(
+                                decoration: estiloCampoTexto(
                                   texto: 'Fecha',
                                   icono: Icons.calendar_today_outlined,
                                 ),
@@ -325,7 +299,7 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
                               onTap: _seleccionarHora,
                               borderRadius: BorderRadius.circular(14),
                               child: InputDecorator(
-                                decoration: _estiloCampo(
+                                decoration: estiloCampoTexto(
                                   texto: 'Hora',
                                   icono: Icons.access_time_rounded,
                                 ),
@@ -347,7 +321,7 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
                       const SizedBox(height: 18),
                       DropdownButtonFormField<String>(
                         value: _duracion,
-                        decoration: _estiloCampo(
+                        decoration: estiloCampoTexto(
                           texto: 'Duración estimada',
                           icono: Icons.timer_outlined,
                         ),
@@ -375,7 +349,7 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
                       TextFormField(
                         controller: _notasController,
                         maxLines: 4,
-                        decoration: _estiloCampo(
+                        decoration: estiloCampoTexto(
                           texto: 'Notas para la cita (opcional)',
                           icono: Icons.notes_rounded,
                         ),

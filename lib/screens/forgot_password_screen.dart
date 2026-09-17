@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../widgets/campo_decoration.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -16,6 +18,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final _correoController = TextEditingController();
 
   bool _correoEnviado = false;
+  bool _enviando = false;
 
   @override
   void dispose() {
@@ -23,41 +26,49 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     super.dispose();
   }
 
-  void _enviarEnlace() {
+  Future<void> _enviarEnlace() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
     setState(() {
-      _correoEnviado = true;
+      _enviando = true;
     });
-  }
 
-  InputDecoration _estiloCampo() {
-    return InputDecoration(
-      labelText: 'Correo electrónico',
-      prefixIcon: const Icon(
-        Icons.email_outlined,
-        color: verdePrincipal,
-      ),
-      filled: true,
-      fillColor: const Color(0xFFFCFFFD),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: Color(0xFFD4E8DC)),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: Color(0xFFD4E8DC)),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(
-          color: verdePrincipal,
-          width: 2,
+    try {
+      await Supabase.instance.client.auth.resetPasswordForEmail(
+        _correoController.text.trim(),
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        _enviando = false;
+        _correoEnviado = true;
+      });
+    } on AuthException catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _enviando = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error.message),
+          backgroundColor: Colors.redAccent,
         ),
-      ),
-    );
+      );
+    } catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _enviando = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('No se pudo enviar el correo: $error'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    }
   }
 
   @override
@@ -147,7 +158,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           TextFormField(
             controller: _correoController,
             keyboardType: TextInputType.emailAddress,
-            decoration: _estiloCampo(),
+            decoration: estiloCampoTexto(
+              texto: 'Correo electrónico',
+              icono: Icons.email_outlined,
+            ),
             validator: (valor) {
               if (valor == null || valor.trim().isEmpty) {
                 return 'Ingresa tu correo electrónico.';
@@ -164,7 +178,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           SizedBox(
             height: 52,
             child: ElevatedButton.icon(
-              onPressed: _enviarEnlace,
+              onPressed: _enviando ? null : _enviarEnlace,
               style: ElevatedButton.styleFrom(
                 backgroundColor: verdePrincipal,
                 foregroundColor: Colors.white,
@@ -173,10 +187,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   borderRadius: BorderRadius.circular(14),
                 ),
               ),
-              icon: const Icon(Icons.send_rounded),
-              label: const Text(
-                'Enviar enlace de recuperación',
-                style: TextStyle(
+              icon: _enviando
+                  ? const SizedBox(
+                      height: 18,
+                      width: 18,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2.5,
+                      ),
+                    )
+                  : const Icon(Icons.send_rounded),
+              label: Text(
+                _enviando ? 'Enviando...' : 'Enviar enlace de recuperación',
+                style: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
                 ),

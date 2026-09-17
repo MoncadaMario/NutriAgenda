@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'register_screen.dart';
 import 'forgot_password_screen.dart';
+import '../widgets/campo_decoration.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -93,32 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  InputDecoration _estiloCampo({
-    required String texto,
-    required IconData icono,
-  }) {
-    return InputDecoration(
-      labelText: texto,
-      prefixIcon: Icon(icono, color: verdePrincipal),
-      filled: true,
-      fillColor: const Color(0xFFFCFFFD),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: Color(0xFFD4E8DC)),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: Color(0xFFD4E8DC)),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(
-          color: verdePrincipal,
-          width: 2,
-        ),
-      ),
-    );
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -200,7 +176,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           TextField(
                             controller: _correoController,
                             keyboardType: TextInputType.emailAddress,
-                            decoration: _estiloCampo(
+                            decoration: _estiloCampoTexto(
                               texto: 'Correo electrónico',
                               icono: Icons.email_outlined,
                             ),
@@ -209,7 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           TextField(
                             controller: _contrasenaController,
                             obscureText: true,
-                            decoration: _estiloCampo(
+                            decoration: _estiloCampoTexto(
                               texto: 'Contraseña',
                               icono: Icons.lock_outline_rounded,
                             ),

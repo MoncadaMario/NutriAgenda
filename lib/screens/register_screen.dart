@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../widgets/campo_decoration.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -34,35 +35,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _contrasenaController.dispose();
     _confirmarContrasenaController.dispose();
     super.dispose();
-  }
-
-  InputDecoration _estiloCampo({
-    required String texto,
-    required IconData icono,
-    Widget? iconoFinal,
-  }) {
-    return InputDecoration(
-      labelText: texto,
-      prefixIcon: Icon(icono, color: verdePrincipal),
-      suffixIcon: iconoFinal,
-      filled: true,
-      fillColor: const Color(0xFFFCFFFD),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: Color(0xFFD4E8DC)),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: Color(0xFFD4E8DC)),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(
-          color: verdePrincipal,
-          width: 2,
-        ),
-      ),
-    );
   }
 
   Future<void> _registrarUsuario() async {
@@ -198,7 +170,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         TextFormField(
                           controller: _nombreController,
                           textCapitalization: TextCapitalization.words,
-                          decoration: _estiloCampo(
+                          decoration: estiloCampoTexto(
                             texto: 'Nombre completo',
                             icono: Icons.person_outline_rounded,
                           ),
@@ -213,7 +185,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         TextFormField(
                           controller: _correoController,
                           keyboardType: TextInputType.emailAddress,
-                          decoration: _estiloCampo(
+                          decoration: estiloCampoTexto(
                             texto: 'Correo electrónico',
                             icono: Icons.email_outlined,
                           ),
@@ -233,7 +205,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         TextFormField(
                           controller: _telefonoController,
                           keyboardType: TextInputType.phone,
-                          decoration: _estiloCampo(
+                          decoration: estiloCampoTexto(
                             texto: 'Teléfono',
                             icono: Icons.phone_outlined,
                           ),
@@ -248,7 +220,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         TextFormField(
                           controller: _contrasenaController,
                           obscureText: _ocultarContrasena,
-                          decoration: _estiloCampo(
+                          decoration: estiloCampoTexto(
                             texto: 'Contraseña',
                             icono: Icons.lock_outline_rounded,
                             iconoFinal: IconButton(
@@ -276,7 +248,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         TextFormField(
                           controller: _confirmarContrasenaController,
                           obscureText: _ocultarConfirmacion,
-                          decoration: _estiloCampo(
+                          decoration: estiloCampoTexto(
                             texto: 'Confirmar contraseña',
                             icono: Icons.lock_reset_outlined,
                             iconoFinal: IconButton(
