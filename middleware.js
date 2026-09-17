@@ -1,14 +1,12 @@
 import { next } from '@vercel/functions';
 
-const RUTAS_PROTEGIDAS = [
-  '/patient-dashboard',
-  '/nutritionist-dashboard',
-  '/admin-dashboard',
-  '/user-management',
-];
-
 export const config = {
-  matcher: RUTAS_PROTEGIDAS,
+  matcher: [
+    '/patient-dashboard',
+    '/nutritionist-dashboard',
+    '/admin-dashboard',
+    '/user-management',
+  ],
 };
 
 export default function middleware(request) {
