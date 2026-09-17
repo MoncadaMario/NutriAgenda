@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'user_management_screen.dart';
 import '../utils/formatters.dart';
 import '../widgets/logout_button.dart';
+import '../widgets/stat_card.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
   const AdminDashboardScreen({super.key});
@@ -160,25 +161,37 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                     spacing: 16,
                     runSpacing: 16,
                     children: [
-                      _AdminStat(
-                        'Usuarios registrados',
-                        '$_totalUsuarios',
-                        Icons.people,
+                      StatCard(
+                        titulo: 'Usuarios registrados',
+                        valor: '$_totalUsuarios',
+                        icono: Icons.people,
+                        ancho: 220,
+                        valorFontSize: 26,
+                        conBorde: false,
                       ),
-                      _AdminStat(
-                        'Pacientes',
-                        '$_totalPacientes',
-                        Icons.person_outline,
+                      StatCard(
+                        titulo: 'Pacientes',
+                        valor: '$_totalPacientes',
+                        icono: Icons.person_outline,
+                        ancho: 220,
+                        valorFontSize: 26,
+                        conBorde: false,
                       ),
-                      _AdminStat(
-                        'Nutricionistas',
-                        '$_totalNutricionistas',
-                        Icons.medical_services_outlined,
+                      StatCard(
+                        titulo: 'Nutricionistas',
+                        valor: '$_totalNutricionistas',
+                        icono: Icons.medical_services_outlined,
+                        ancho: 220,
+                        valorFontSize: 26,
+                        conBorde: false,
                       ),
-                      _AdminStat(
-                        'Citas este mes',
-                        '$_citasDelMes',
-                        Icons.calendar_today_outlined,
+                      StatCard(
+                        titulo: 'Citas este mes',
+                        valor: '$_citasDelMes',
+                        icono: Icons.calendar_today_outlined,
+                        ancho: 220,
+                        valorFontSize: 26,
+                        conBorde: false,
                       ),
                     ],
                   ),
@@ -224,44 +237,6 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                 ],
               ),
             ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _AdminStat extends StatelessWidget {
-  final String titulo;
-  final String valor;
-  final IconData icono;
-
-  const _AdminStat(this.titulo, this.valor, this.icono);
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 220,
-      child: Card(
-        elevation: 0,
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(icono, color: const Color(0xFF168B62)),
-              const SizedBox(height: 18),
-              Text(titulo),
-              const SizedBox(height: 6),
-              Text(
-                valor,
-                style: const TextStyle(
-                  color: Color(0xFF173D2D),
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
           ),
         ),
       ),

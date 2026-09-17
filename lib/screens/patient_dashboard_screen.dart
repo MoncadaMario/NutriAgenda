@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'appointment_confirmation_screen.dart';
 import '../widgets/logout_button.dart';
 import '../utils/formatters.dart';
+import '../widgets/stat_card.dart';
 
 class PatientDashboardScreen extends StatefulWidget {
   const PatientDashboardScreen({super.key});
@@ -315,22 +316,22 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
                       spacing: 16,
                       runSpacing: 16,
                       children: [
-                        _MetricCard(
+                        StatCard(
                           icono: Icons.monitor_weight_outlined,
                           titulo: 'Peso',
                           valor: '${ultimaConsulta['peso']} kg',
                         ),
-                        _MetricCard(
+                        StatCard(
                           icono: Icons.height_rounded,
                           titulo: 'Estatura',
                           valor: '${ultimaConsulta['estatura']} m',
                         ),
-                        _MetricCard(
+                        StatCard(
                           icono: Icons.favorite_outline_rounded,
                           titulo: 'IMC',
                           valor: '${ultimaConsulta['imc']}',
                         ),
-                        _MetricCard(
+                        StatCard(
                           icono: Icons.percent_rounded,
                           titulo: '% de grasa',
                           valor: '${ultimaConsulta['porcentaje_grasa']}%',
@@ -490,56 +491,6 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
                 ],
               ),
             ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _MetricCard extends StatelessWidget {
-  final IconData icono;
-  final String titulo;
-  final String valor;
-
-  const _MetricCard({
-    required this.icono,
-    required this.titulo,
-    required this.valor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 200,
-      child: Card(
-        elevation: 0,
-        color: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-          side: const BorderSide(color: Color(0xFFE0EEE6)),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(icono, color: PatientDashboardScreen.verdePrincipal),
-              const SizedBox(height: 18),
-              Text(
-                titulo,
-                style: const TextStyle(color: Color(0xFF62766D)),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                valor,
-                style: const TextStyle(
-                  color: PatientDashboardScreen.verdeOscuro,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
           ),
         ),
       ),

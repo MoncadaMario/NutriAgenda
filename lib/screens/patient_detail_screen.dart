@@ -4,6 +4,7 @@ import 'consultation_form_screen.dart';
 import 'menu_assignment_screen.dart';
 import 'schedule_appointment_screen.dart';
 import '../utils/formatters.dart';
+import '../widgets/stat_card.dart';
 
 class PatientDetailScreen extends StatefulWidget {
   final String pacienteId;
@@ -164,15 +165,38 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
                       spacing: 14,
                       runSpacing: 14,
                       children: [
-                        _DataCard('Peso', '${ultimaConsulta['peso']} kg',
-                            Icons.monitor_weight_outlined),
-                        _DataCard('Estatura', '${ultimaConsulta['estatura']} m',
-                            Icons.height_rounded),
-                        _DataCard('IMC', '${ultimaConsulta['imc']}',
-                            Icons.favorite_outline_rounded),
-                        _DataCard('% grasa',
-                            '${ultimaConsulta['porcentaje_grasa']}%',
-                            Icons.percent_rounded),
+                        StatCard(
+                          titulo: 'Peso',
+                          valor: '${ultimaConsulta['peso']} kg',
+                          icono: Icons.monitor_weight_outlined,
+                          ancho: 170,
+                          valorFontSize: 20,
+                          conBorde: false,
+                        ),
+                        StatCard(
+                          titulo: 'Estatura',
+                          valor: '${ultimaConsulta['estatura']} m',
+                          icono: Icons.height_rounded,
+                          ancho: 170,
+                          valorFontSize: 20,
+                          conBorde: false,
+                        ),
+                        StatCard(
+                          titulo: 'IMC',
+                          valor: '${ultimaConsulta['imc']}',
+                          icono: Icons.favorite_outline_rounded,
+                          ancho: 170,
+                          valorFontSize: 20,
+                          conBorde: false,
+                        ),
+                        StatCard(
+                          titulo: '% grasa',
+                          valor: '${ultimaConsulta['porcentaje_grasa']}%',
+                          icono: Icons.percent_rounded,
+                          ancho: 170,
+                          valorFontSize: 20,
+                          conBorde: false,
+                        ),
                       ],
                     ),
                   const SizedBox(height: 28),
@@ -280,44 +304,6 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
                 ],
               ),
             ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _DataCard extends StatelessWidget {
-  final String titulo;
-  final String valor;
-  final IconData icono;
-
-  const _DataCard(this.titulo, this.valor, this.icono);
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 170,
-      child: Card(
-        elevation: 0,
-        child: Padding(
-          padding: const EdgeInsets.all(18),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(icono, color: const Color(0xFF168B62)),
-              const SizedBox(height: 14),
-              Text(titulo),
-              const SizedBox(height: 4),
-              Text(
-                valor,
-                style: const TextStyle(
-                  color: Color(0xFF173D2D),
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
           ),
         ),
       ),
