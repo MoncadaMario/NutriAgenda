@@ -1,10 +1,11 @@
-// ignore_for_file: deprecated_member_use
-import 'dart:html' as html;
+import 'package:web/web.dart' as web;
+
+const String _cookieBase = 'na_session=1; path=/; max-age=';
 
 void marcarSesionActiva() {
-  html.document.cookie = 'na_session=1; path=/; max-age=2592000';
+  web.document.cookie = '${_cookieBase}2592000';
 }
 
 void limpiarSesionActiva() {
-  html.document.cookie = 'na_session=1; path=/; max-age=0';
+  web.document.cookie = '${_cookieBase}0';
 }
