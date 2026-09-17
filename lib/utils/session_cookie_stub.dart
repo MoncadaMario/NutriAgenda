@@ -1,0 +1,2 @@
+void marcarSesionActiva() {}
+void limpiarSesionActiva() {}

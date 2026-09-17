@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/session_cookie.dart';
 
 class LogoutButton extends StatelessWidget {
   final Color color;
@@ -14,7 +15,10 @@ class LogoutButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       tooltip: 'Cerrar sesión',
-      onPressed: onLogout,
+      onPressed: () {
+        limpiarSesionActiva();
+        onLogout();
+      },
       icon: Icon(Icons.logout_rounded, color: color),
     );
   }

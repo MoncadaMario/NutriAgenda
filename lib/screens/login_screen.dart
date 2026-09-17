@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'register_screen.dart';
 import 'forgot_password_screen.dart';
 import '../widgets/campo_decoration.dart';
+import '../utils/session_cookie.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -60,6 +61,8 @@ class _LoginScreenState extends State<LoginScreen> {
         _mostrarMensaje('No se pudo iniciar sesión.', esError: true);
         return;
       }
+
+            marcarSesionActiva();
 
       final perfil = await Supabase.instance.client
           .from('profiles')
