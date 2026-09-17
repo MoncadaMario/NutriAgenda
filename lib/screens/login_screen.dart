@@ -94,8 +94,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -176,7 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           TextField(
                             controller: _correoController,
                             keyboardType: TextInputType.emailAddress,
-                            decoration: _estiloCampoTexto(
+                            decoration: estiloCampoTexto(
                               texto: 'Correo electrónico',
                               icono: Icons.email_outlined,
                             ),
@@ -185,7 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           TextField(
                             controller: _contrasenaController,
                             obscureText: true,
-                            decoration: _estiloCampoTexto(
+                            decoration: estiloCampoTexto(
                               texto: 'Contraseña',
                               icono: Icons.lock_outline_rounded,
                             ),
