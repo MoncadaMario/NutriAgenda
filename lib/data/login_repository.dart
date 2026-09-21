@@ -26,7 +26,7 @@ class SupabaseLoginRepository implements LoginRepository {
 
     final usuario = respuesta.user;
     if (usuario == null) {
-      throw AuthException('No se pudo iniciar sesión.');
+      throw const AuthException('No se pudo iniciar sesión.');
     }
 
     return usuario.id;
