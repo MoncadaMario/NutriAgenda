@@ -4,6 +4,7 @@ import 'user_management_screen.dart';
 import '../utils/formatters.dart';
 import '../widgets/logout_button.dart';
 import '../widgets/stat_card.dart';
+import '../widgets/dashboard_scaffold.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
   const AdminDashboardScreen({super.key});
@@ -99,9 +100,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   @override
   Widget build(BuildContext context) {
     if (_cargando) {
-      return const Scaffold(
-        backgroundColor: Color(0xFFF4FBF7),
-        body: Center(child: CircularProgressIndicator(color: verde)),
+      return const LoadingScaffold(
+        background: Color(0xFFF4FBF7),
+        indicatorColor: verde,
       );
     }
 
@@ -137,108 +138,97 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           ),
         ],
       ),
-      body: RefreshIndicator(
+      body: RefreshableContent(
         onRefresh: _cargarDatos,
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(24),
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 1100),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Panel administrativo',
-                    style: TextStyle(
-                      color: oscuro,
-                      fontSize: 29,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  Wrap(
-                    spacing: 16,
-                    runSpacing: 16,
-                    children: [
-                      StatCard(
-                        titulo: 'Usuarios registrados',
-                        valor: '$_totalUsuarios',
-                        icono: Icons.people,
-                        ancho: 220,
-                        valorFontSize: 26,
-                        conBorde: false,
-                      ),
-                      StatCard(
-                        titulo: 'Pacientes',
-                        valor: '$_totalPacientes',
-                        icono: Icons.person_outline,
-                        ancho: 220,
-                        valorFontSize: 26,
-                        conBorde: false,
-                      ),
-                      StatCard(
-                        titulo: 'Nutricionistas',
-                        valor: '$_totalNutricionistas',
-                        icono: Icons.medical_services_outlined,
-                        ancho: 220,
-                        valorFontSize: 26,
-                        conBorde: false,
-                      ),
-                      StatCard(
-                        titulo: 'Citas este mes',
-                        valor: '$_citasDelMes',
-                        icono: Icons.calendar_today_outlined,
-                        ancho: 220,
-                        valorFontSize: 26,
-                        conBorde: false,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 32),
-                  const Text(
-                    'Acciones administrativas',
-                    style: TextStyle(
-                      color: oscuro,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Wrap(
-                    spacing: 16,
-                    runSpacing: 16,
-                    children: [
-                      ElevatedButton.icon(
-                        onPressed: _irAGestionUsuarios,
-                        icon: const Icon(Icons.manage_accounts_outlined),
-                        label: const Text('Gestionar usuarios'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: verde,
-                          foregroundColor: Colors.white,
-                        ),
-                      ),
-                      OutlinedButton.icon(
-                        onPressed: () {
-                          _mostrarMensaje(
-                            'La vista de todas las citas se agregará después.',
-                          );
-                        },
-                        icon: const Icon(Icons.calendar_month_outlined),
-                        label: const Text('Revisar citas'),
-                      ),
-                      OutlinedButton.icon(
-                        onPressed: _irAGestionUsuarios,
-                        icon: const Icon(Icons.verified_user_outlined),
-                        label: const Text('Solicitudes de nutricionistas'),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+        maxWidth: 1100,
+        children: [
+          const Text(
+            'Panel administrativo',
+            style: TextStyle(
+              color: oscuro,
+              fontSize: 29,
+              fontWeight: FontWeight.bold,
             ),
           ),
-        ),
+          const SizedBox(height: 24),
+          Wrap(
+            spacing: 16,
+            runSpacing: 16,
+            children: [
+              StatCard(
+                titulo: 'Usuarios registrados',
+                valor: '$_totalUsuarios',
+                icono: Icons.people,
+                ancho: 220,
+                valorFontSize: 26,
+                conBorde: false,
+              ),
+              StatCard(
+                titulo: 'Pacientes',
+                valor: '$_totalPacientes',
+                icono: Icons.person_outline,
+                ancho: 220,
+                valorFontSize: 26,
+                conBorde: false,
+              ),
+              StatCard(
+                titulo: 'Nutricionistas',
+                valor: '$_totalNutricionistas',
+                icono: Icons.medical_services_outlined,
+                ancho: 220,
+                valorFontSize: 26,
+                conBorde: false,
+              ),
+              StatCard(
+                titulo: 'Citas este mes',
+                valor: '$_citasDelMes',
+                icono: Icons.calendar_today_outlined,
+                ancho: 220,
+                valorFontSize: 26,
+                conBorde: false,
+              ),
+            ],
+          ),
+          const SizedBox(height: 32),
+          const Text(
+            'Acciones administrativas',
+            style: TextStyle(
+              color: oscuro,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Wrap(
+            spacing: 16,
+            runSpacing: 16,
+            children: [
+              ElevatedButton.icon(
+                onPressed: _irAGestionUsuarios,
+                icon: const Icon(Icons.manage_accounts_outlined),
+                label: const Text('Gestionar usuarios'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: verde,
+                  foregroundColor: Colors.white,
+                ),
+              ),
+              OutlinedButton.icon(
+                onPressed: () {
+                  _mostrarMensaje(
+                    'La vista de todas las citas se agregará después.',
+                  );
+                },
+                icon: const Icon(Icons.calendar_month_outlined),
+                label: const Text('Revisar citas'),
+              ),
+              OutlinedButton.icon(
+                onPressed: _irAGestionUsuarios,
+                icon: const Icon(Icons.verified_user_outlined),
+                label: const Text('Solicitudes de nutricionistas'),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

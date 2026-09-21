@@ -4,6 +4,7 @@ import 'appointment_confirmation_screen.dart';
 import '../widgets/logout_button.dart';
 import '../utils/formatters.dart';
 import '../widgets/stat_card.dart';
+import '../widgets/dashboard_scaffold.dart';
 
 class PatientDashboardScreen extends StatefulWidget {
   const PatientDashboardScreen({super.key});
@@ -108,9 +109,9 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
   @override
   Widget build(BuildContext context) {
     if (_cargando) {
-      return const Scaffold(
-        backgroundColor: fondoClaro,
-        body: Center(child: CircularProgressIndicator(color: verdePrincipal)),
+      return const LoadingScaffold(
+        background: fondoClaro,
+        indicatorColor: verdePrincipal,
       );
     }
 
@@ -177,320 +178,359 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
           ),
         ],
       ),
-      body: RefreshIndicator(
+      body: RefreshableContent(
         onRefresh: _cargarDatos,
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(24),
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 1200),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Hola, $_nombre',
-                    style: const TextStyle(
-                      color: verdeOscuro,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  const Text(
-                    'Aquí puedes consultar tus citas, progreso y plan nutricional.',
-                    style: TextStyle(
-                      color: Color(0xFF62766D),
-                      fontSize: 16,
-                    ),
-                  ),
-                  const SizedBox(height: 28),
+        maxWidth: 1200,
+        children: [
+          Text(
+            'Hola, $_nombre',
+            style: const TextStyle(
+              color: verdeOscuro,
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 6),
+          const Text(
+            'Aquí puedes consultar tus citas, progreso y plan nutricional.',
+            style: TextStyle(
+              color: Color(0xFF62766D),
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(height: 28),
 
-                  // Próxima cita
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: verdePrincipal,
-                      borderRadius: BorderRadius.circular(24),
+          // Próxima cita
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: verdePrincipal,
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const CircleAvatar(
+                      radius: 28,
+                      backgroundColor: Color(0xFFBFEFD8),
+                      child: Icon(
+                        Icons.calendar_month_rounded,
+                        color: verdePrincipal,
+                        size: 30,
+                      ),
                     ),
-                    child: Column(
+                    const SizedBox(width: 16),
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const CircleAvatar(
-                              radius: 28,
-                              backgroundColor: Color(0xFFBFEFD8),
-                              child: Icon(
-                                Icons.calendar_month_rounded,
-                                color: verdePrincipal,
-                                size: 30,
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Tu próxima cita',
-                                  style: TextStyle(
-                                    color: Color(0xFFDDF8E8),
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  _proximaCita == null
-                                      ? 'No tienes citas agendadas'
-                                      : '${formatearFechaLarga(_proximaCita!['fecha'])} · ${formatearHora12(_proximaCita!['hora'])}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  _proximaCita == null
-                                      ? 'Tu nutricionista te asignará una próxima cita.'
-                                      : _proximaCita!['tipo'] as String,
-                                  style: const TextStyle(
-                                    color: Color(0xFFDDF8E8),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        if (_proximaCita != null) ...[
-                          const SizedBox(height: 16),
-                          OutlinedButton.icon(
-                            onPressed: () async {
-                              await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      AppointmentConfirmationScreen(
-                                    cita: _proximaCita!,
-                                  ),
-                                ),
-                              );
-                              _cargarDatos();
-                            },
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              side: const BorderSide(color: Colors.white),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 14,
-                              ),
-                            ),
-                            icon: const Icon(Icons.event_available_outlined),
-                            label: const Text('Ver detalles de mi cita'),
+                        const Text(
+                          'Tu próxima cita',
+                          style: TextStyle(
+                            color: Color(0xFFDDF8E8),
+                            fontSize: 14,
                           ),
-                        ],
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-
-                  const Text(
-                    'Resumen de tu última consulta',
-                    style: TextStyle(
-                      color: verdeOscuro,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  if (ultimaConsulta == null)
-                    const Text(
-                      'Aún no tienes consultas registradas.',
-                      style: TextStyle(color: Color(0xFF62766D)),
-                    )
-                  else
-                    Wrap(
-                      spacing: 16,
-                      runSpacing: 16,
-                      children: [
-                        StatCard(
-                          icono: Icons.monitor_weight_outlined,
-                          titulo: 'Peso',
-                          valor: '${ultimaConsulta['peso']} kg',
                         ),
-                        StatCard(
-                          icono: Icons.height_rounded,
-                          titulo: 'Estatura',
-                          valor: '${ultimaConsulta['estatura']} m',
+                        const SizedBox(height: 4),
+                        Text(
+                          _proximaCita == null
+                              ? 'No tienes citas agendadas'
+                              : '${formatearFechaLarga(_proximaCita!['fecha'])} · ${formatearHora12(_proximaCita!['hora'])}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 19,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        StatCard(
-                          icono: Icons.favorite_outline_rounded,
-                          titulo: 'IMC',
-                          valor: '${ultimaConsulta['imc']}',
-                        ),
-                        StatCard(
-                          icono: Icons.percent_rounded,
-                          titulo: '% de grasa',
-                          valor: '${ultimaConsulta['porcentaje_grasa']}%',
+                        const SizedBox(height: 4),
+                        Text(
+                          _proximaCita == null
+                              ? 'Tu nutricionista te asignará una próxima cita.'
+                              : _proximaCita!['tipo'] as String,
+                          style: const TextStyle(
+                            color: Color(0xFFDDF8E8),
+                          ),
                         ),
                       ],
                     ),
-                  const SizedBox(height: 32),
-
-                  const Text(
-                    'Historial de consultas',
-                    style: TextStyle(
-                      color: verdeOscuro,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Los datos son registrados por tu nutricionista.',
-                    style: TextStyle(color: Color(0xFF62766D)),
-                  ),
+                  ],
+                ),
+                if (_proximaCita != null) ...[
                   const SizedBox(height: 16),
-
-                  if (_historial.isEmpty)
-                    const Text(
-                      'No hay consultas registradas todavía.',
-                      style: TextStyle(color: Color(0xFF62766D)),
-                    )
-                  else
-                    Card(
-                      elevation: 0,
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                        side: const BorderSide(color: Color(0xFFE0EEE6)),
-                      ),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: DataTable(
-                          headingRowColor: WidgetStateProperty.all(
-                            const Color(0xFFF0FAF4),
+                  OutlinedButton.icon(
+                    onPressed: () async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              AppointmentConfirmationScreen(
+                            cita: _proximaCita!,
                           ),
-                          columns: const [
-                            DataColumn(label: Text('Fecha')),
-                            DataColumn(label: Text('Peso')),
-                            DataColumn(label: Text('Estatura')),
-                            DataColumn(label: Text('Género')),
-                            DataColumn(label: Text('Edad')),
-                            DataColumn(label: Text('IMC')),
-                            DataColumn(label: Text('% grasa')),
-                          ],
-                          rows: _historial.map((consulta) {
-                            return DataRow(
-                              cells: [
-                                DataCell(Text(
-                                    formatearFechaLarga(consulta['fecha']))),
-                                DataCell(Text('${consulta['peso']} kg')),
-                                DataCell(Text('${consulta['estatura']} m')),
-                                DataCell(Text('${consulta['genero'] ?? '-'}')),
-                                DataCell(Text('${consulta['edad'] ?? '-'} años')),
-                                DataCell(Text('${consulta['imc']}')),
-                                DataCell(
-                                    Text('${consulta['porcentaje_grasa']}%')),
-                              ],
-                            );
-                          }).toList(),
                         ),
+                      );
+                      _cargarDatos();
+                    },
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      side: const BorderSide(color: Colors.white),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 14,
                       ),
                     ),
-                  const SizedBox(height: 32),
-
-                  const Text(
-                    'Mi menú nutricional',
-                    style: TextStyle(
-                      color: verdeOscuro,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    icon: const Icon(Icons.event_available_outlined),
+                    label: const Text('Ver detalles de mi cita'),
                   ),
-                  const SizedBox(height: 16),
-
-                  if (_ultimoMenu == null)
-                    const Text(
-                      'Aún no tienes un menú asignado.',
-                      style: TextStyle(color: Color(0xFF62766D)),
-                    )
-                  else
-                    Card(
-                      elevation: 0,
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                        side: const BorderSide(color: Color(0xFFE0EEE6)),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(24),
-                        child: Wrap(
-                          spacing: 20,
-                          runSpacing: 20,
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: [
-                            Container(
-                              width: 62,
-                              height: 62,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFDDF8E8),
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              child: const Icon(
-                                Icons.menu_book_rounded,
-                                color: verdePrincipal,
-                                size: 32,
-                              ),
-                            ),
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Menú nutricional',
-                                  style: TextStyle(
-                                    color: verdeOscuro,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  'Asignado el ${formatearFechaLarga(_ultimoMenu!['fecha'])}',
-                                  style: const TextStyle(color: Color(0xFF62766D)),
-                                ),
-                              ],
-                            ),
-                            OutlinedButton.icon(
-                              onPressed: () {
-                                _mostrarMensaje(
-                                  context,
-                                  _ultimoMenu!['contenido'] ??
-                                      'Este menú no tiene contenido adicional.',
-                                );
-                              },
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: verdePrincipal,
-                                side: const BorderSide(color: verdePrincipal),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 18,
-                                  vertical: 14,
-                                ),
-                              ),
-                              icon: const Icon(Icons.picture_as_pdf_outlined),
-                              label: const Text('Ver menú'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
                 ],
+              ],
+            ),
+          ),
+          const SizedBox(height: 32),
+
+          const Text(
+            'Resumen de tu última consulta',
+            style: TextStyle(
+              color: verdeOscuro,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          if (ultimaConsulta == null)
+            const Text(
+              'Aún no tienes consultas registradas.',
+              style: TextStyle(color: Color(0xFF62766D)),
+            )
+          else
+            Wrap(
+              spacing: 16,
+              runSpacing: 16,
+              children: [
+                StatCard(
+                  icono: Icons.monitor_weight_outlined,
+                  titulo: 'Peso',
+                  valor: '${ultimaConsulta['peso']} kg',
+                ),
+                StatCard(
+                  icono: Icons.height_rounded,
+                  titulo: 'Estatura',
+                  valor: '${ultimaConsulta['estatura']} m',
+                ),
+                StatCard(
+                  icono: Icons.favorite_outline_rounded,
+                  titulo: 'IMC',
+                  valor: '${ultimaConsulta['imc']}',
+                ),
+                StatCard(
+                  icono: Icons.percent_rounded,
+                  titulo: '% de grasa',
+                  valor: '${ultimaConsulta['porcentaje_grasa']}%',
+                ),
+              ],
+            ),
+          const SizedBox(height: 32),
+
+          const Text(
+            'Historial de consultas',
+            style: TextStyle(
+              color: verdeOscuro,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'Los datos son registrados por tu nutricionista.',
+            style: TextStyle(color: Color(0xFF62766D)),
+          ),
+          const SizedBox(height: 16),
+
+          if (_historial.isEmpty)
+            const Text(
+              'No hay consultas registradas todavía.',
+              style: TextStyle(color: Color(0xFF62766D)),
+            )
+          else
+            Card(
+              elevation: 0,
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+                side: const BorderSide(color: Color(0xFFE0EEE6)),
+              ),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: DataTable(
+                  headingRowColor: WidgetStateProperty.all(
+                    const Color(0xFFF0FAF4),
+                  ),
+                  columns: const [
+                    DataColumn(label: Text('Fecha')),
+                    DataColumn(label: Text('Peso')),
+                    DataColumn(label: Text('Estatura')),
+                    DataColumn(label: Text('Género')),
+                    DataColumn(label: Text('Edad')),
+                    DataColumn(label: Text('IMC')),
+                    DataColumn(label: Text('% grasa')),
+                  ],
+                  rows: _historial.map((consulta) {
+                    return DataRow(
+                      cells: [
+                        DataCell(Text(
+                            formatearFechaLarga(consulta['fecha']))),
+                        DataCell(Text('${consulta['peso']} kg')),
+                        DataCell(Text('${consulta['estatura']} m')),
+                        DataCell(Text('${consulta['genero'] ?? '-'}')),
+                        DataCell(Text('${consulta['edad'] ?? '-'} años')),
+                        DataCell(Text('${consulta['imc']}')),
+                        DataCell(
+                            Text('${consulta['porcentaje_grasa']}%')),
+                      ],
+                    );
+                  }).toList(),
+                ),
               ),
             ),
+          const SizedBox(height: 32),
+
+          const Text(
+            'Mi menú nutricional',
+            style: TextStyle(
+              color: verdeOscuro,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          if (_ultimoMenu == null)
+            const Text(
+              'Aún no tienes un menú asignado.',
+              style: TextStyle(color: Color(0xFF62766D)),
+            )
+          else
+            Card(
+              elevation: 0,
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+                side: const BorderSide(color: Color(0xFFE0EEE6)),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Wrap(
+                  spacing: 20,
+                  runSpacing: 20,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    Container(
+                      width: 62,
+                      height: 62,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFDDF8E8),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: const Icon(
+                        Icons.menu_book_rounded,
+                        color: verdePrincipal,
+                        size: 32,
+                      ),
+                    ),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Menú nutricional',
+                          style: TextStyle(
+                            color: verdeOscuro,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          'Asignado el ${formatearFechaLarga(_ultimoMenu!['fecha'])}',
+                          style: const TextStyle(color: Color(0xFF62766D)),
+                        ),
+                      ],
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: () {
+                        _mostrarMensaje(
+                          context,
+                          _ultimoMenu!['contenido'] ??
+                              'Este menú no tiene contenido adicional.',
+                        );
+                      },
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: verdePrincipal,
+                        side: const BorderSide(color: verdePrincipal),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 18,
+                          vertical: 14,
+                        ),
+                      ),
+                      icon: const Icon(Icons.picture_as_pdf_outlined),
+                      label: const Text('Ver menú'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MetricCard extends StatelessWidget {
+  final IconData icono;
+  final String titulo;
+  final String valor;
+
+  const _MetricCard({
+    required this.icono,
+    required this.titulo,
+    required this.valor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 200,
+      child: Card(
+        elevation: 0,
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: const BorderSide(color: Color(0xFFE0EEE6)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(icono, color: PatientDashboardScreen.verdePrincipal),
+              const SizedBox(height: 18),
+              Text(
+                titulo,
+                style: const TextStyle(color: Color(0xFF62766D)),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                valor,
+                style: const TextStyle(
+                  color: PatientDashboardScreen.verdeOscuro,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
         ),
       ),

@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'patients_screen.dart';
 import '../widgets/logout_button.dart';
 import '../utils/formatters.dart';
+import '../widgets/dashboard_scaffold.dart';
 
 class NutritionistDashboardScreen extends StatefulWidget {
   const NutritionistDashboardScreen({super.key});
@@ -143,9 +144,9 @@ class _NutritionistDashboardScreenState
   @override
   Widget build(BuildContext context) {
     if (_cargando) {
-      return const Scaffold(
-        backgroundColor: fondoClaro,
-        body: Center(child: CircularProgressIndicator(color: verdePrincipal)),
+      return const LoadingScaffold(
+        background: fondoClaro,
+        indicatorColor: verdePrincipal,
       );
     }
 
@@ -210,242 +211,231 @@ class _NutritionistDashboardScreenState
           ),
         ],
       ),
-      body: RefreshIndicator(
+      body: RefreshableContent(
         onRefresh: _cargarDatos,
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(24),
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 1200),
+        maxWidth: 1200,
+        children: [
+          Text(
+            'Hola, $_nombre',
+            style: const TextStyle(
+              color: verdeOscuro,
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 6),
+          const Text(
+            'Este es el resumen de tu agenda y pacientes.',
+            style: TextStyle(
+              color: Color(0xFF62766D),
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(height: 28),
+          Wrap(
+            spacing: 16,
+            runSpacing: 16,
+            children: [
+              _SummaryCard(
+                icono: Icons.people_outline_rounded,
+                titulo: 'Pacientes activos',
+                valor: '$_pacientesActivos',
+                colorIcono: verdePrincipal,
+              ),
+              _SummaryCard(
+                icono: Icons.calendar_today_outlined,
+                titulo: 'Citas para hoy',
+                valor: '$_citasHoy',
+                colorIcono: const Color(0xFF2E7CC2),
+              ),
+              _SummaryCard(
+                icono: Icons.pending_actions_outlined,
+                titulo: 'Por confirmar',
+                valor: '$_porConfirmar',
+                colorIcono: const Color(0xFFE59819),
+              ),
+              _SummaryCard(
+                icono: Icons.check_circle_outline_rounded,
+                titulo: 'Consultas del mes',
+                valor: '$_consultasDelMes',
+                colorIcono: const Color(0xFF8A57C8),
+              ),
+            ],
+          ),
+          const SizedBox(height: 32),
+          const Text(
+            'Acciones rápidas',
+            style: TextStyle(
+              color: verdeOscuro,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Wrap(
+            spacing: 16,
+            runSpacing: 16,
+            children: [
+              _ActionCard(
+                icono: Icons.add_circle_outline_rounded,
+                titulo: 'Agendar cita',
+                subtitulo: 'Elige un paciente para agendarle',
+                onTap: _irAPacientes,
+              ),
+              _ActionCard(
+                icono: Icons.person_search_outlined,
+                titulo: 'Ver pacientes',
+                subtitulo: 'Buscar y consultar pacientes',
+                onTap: _irAPacientes,
+              ),
+              _ActionCard(
+                icono: Icons.assignment_outlined,
+                titulo: 'Nueva consulta',
+                subtitulo: 'Elige un paciente para registrarle datos',
+                onTap: _irAPacientes,
+              ),
+              _ActionCard(
+                icono: Icons.menu_book_outlined,
+                titulo: 'Asignar menú',
+                subtitulo: 'Elige un paciente para asignarle un menú',
+                onTap: _irAPacientes,
+              ),
+            ],
+          ),
+          const SizedBox(height: 32),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Citas de hoy',
+                style: TextStyle(
+                  color: verdeOscuro,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  _mostrarMensaje(
+                    context,
+                    'La agenda completa se agregará después.',
+                  );
+                },
+                child: const Text(
+                  'Ver agenda completa',
+                  style: TextStyle(
+                    color: verdePrincipal,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          if (_citasDeHoy.isEmpty)
+            Card(
+              elevation: 0,
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+                side: const BorderSide(color: Color(0xFFE0EEE6)),
+              ),
+              child: const Padding(
+                padding: EdgeInsets.all(24),
+                child: Text(
+                  'No tienes citas programadas para hoy.',
+                  style: TextStyle(color: Color(0xFF62766D)),
+                ),
+              ),
+            )
+          else
+            Card(
+              elevation: 0,
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+                side: const BorderSide(color: Color(0xFFE0EEE6)),
+              ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Hola, $_nombre',
-                    style: const TextStyle(
-                      color: verdeOscuro,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
+                  for (var i = 0; i < _citasDeHoy.length; i++) ...[
+                    _AppointmentTile(
+                      hora: formatearHora12(_citasDeHoy[i]['hora']),
+                      nombre: _citasDeHoy[i]['nombrePaciente'],
+                      tipo: _citasDeHoy[i]['tipo'],
+                      estado: _citasDeHoy[i]['estado'] == 'confirmada'
+                          ? 'Confirmada'
+                          : 'Pendiente',
+                      colorEstado:
+                          _citasDeHoy[i]['estado'] == 'confirmada'
+                              ? verdePrincipal
+                              : const Color(0xFFE59819),
                     ),
-                  ),
-                  const SizedBox(height: 6),
-                  const Text(
-                    'Este es el resumen de tu agenda y pacientes.',
-                    style: TextStyle(
-                      color: Color(0xFF62766D),
-                      fontSize: 16,
-                    ),
-                  ),
-                  const SizedBox(height: 28),
-                  Wrap(
-                    spacing: 16,
-                    runSpacing: 16,
-                    children: [
-                      _SummaryCard(
-                        icono: Icons.people_outline_rounded,
-                        titulo: 'Pacientes activos',
-                        valor: '$_pacientesActivos',
-                        colorIcono: verdePrincipal,
-                      ),
-                      _SummaryCard(
-                        icono: Icons.calendar_today_outlined,
-                        titulo: 'Citas para hoy',
-                        valor: '$_citasHoy',
-                        colorIcono: const Color(0xFF2E7CC2),
-                      ),
-                      _SummaryCard(
-                        icono: Icons.pending_actions_outlined,
-                        titulo: 'Por confirmar',
-                        valor: '$_porConfirmar',
-                        colorIcono: const Color(0xFFE59819),
-                      ),
-                      _SummaryCard(
-                        icono: Icons.check_circle_outline_rounded,
-                        titulo: 'Consultas del mes',
-                        valor: '$_consultasDelMes',
-                        colorIcono: const Color(0xFF8A57C8),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 32),
-                  const Text(
-                    'Acciones rápidas',
-                    style: TextStyle(
-                      color: verdeOscuro,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Wrap(
-                    spacing: 16,
-                    runSpacing: 16,
-                    children: [
-                      _ActionCard(
-                        icono: Icons.add_circle_outline_rounded,
-                        titulo: 'Agendar cita',
-                        subtitulo: 'Elige un paciente para agendarle',
-                        onTap: _irAPacientes,
-                      ),
-                      _ActionCard(
-                        icono: Icons.person_search_outlined,
-                        titulo: 'Ver pacientes',
-                        subtitulo: 'Buscar y consultar pacientes',
-                        onTap: _irAPacientes,
-                      ),
-                      _ActionCard(
-                        icono: Icons.assignment_outlined,
-                        titulo: 'Nueva consulta',
-                        subtitulo: 'Elige un paciente para registrarle datos',
-                        onTap: _irAPacientes,
-                      ),
-                      _ActionCard(
-                        icono: Icons.menu_book_outlined,
-                        titulo: 'Asignar menú',
-                        subtitulo: 'Elige un paciente para asignarle un menú',
-                        onTap: _irAPacientes,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 32),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Citas de hoy',
-                        style: TextStyle(
-                          color: verdeOscuro,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          _mostrarMensaje(
-                            context,
-                            'La agenda completa se agregará después.',
-                          );
-                        },
-                        child: const Text(
-                          'Ver agenda completa',
-                          style: TextStyle(
-                            color: verdePrincipal,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  if (_citasDeHoy.isEmpty)
-                    Card(
-                      elevation: 0,
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                        side: const BorderSide(color: Color(0xFFE0EEE6)),
-                      ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(24),
-                        child: Text(
-                          'No tienes citas programadas para hoy.',
-                          style: TextStyle(color: Color(0xFF62766D)),
-                        ),
-                      ),
-                    )
-                  else
-                    Card(
-                      elevation: 0,
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                        side: const BorderSide(color: Color(0xFFE0EEE6)),
-                      ),
-                      child: Column(
-                        children: [
-                          for (var i = 0; i < _citasDeHoy.length; i++) ...[
-                            _AppointmentTile(
-                              hora: formatearHora12(_citasDeHoy[i]['hora']),
-                              nombre: _citasDeHoy[i]['nombrePaciente'],
-                              tipo: _citasDeHoy[i]['tipo'],
-                              estado: _citasDeHoy[i]['estado'] == 'confirmada'
-                                  ? 'Confirmada'
-                                  : 'Pendiente',
-                              colorEstado:
-                                  _citasDeHoy[i]['estado'] == 'confirmada'
-                                      ? verdePrincipal
-                                      : const Color(0xFFE59819),
-                            ),
-                            if (i != _citasDeHoy.length - 1)
-                              const Divider(height: 1),
-                          ],
-                        ],
-                      ),
-                    ),
-                  const SizedBox(height: 32),
-                  const Text(
-                    'Solicitudes pendientes',
-                    style: TextStyle(
-                      color: verdeOscuro,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFF7E8),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: const Color(0xFFF7D596),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.info_outline_rounded,
-                          color: Color(0xFFE59819),
-                          size: 30,
-                        ),
-                        const SizedBox(width: 14),
-                        Expanded(
-                          child: Text(
-                            _porConfirmar == 0
-                                ? 'No tienes citas pendientes de confirmación.'
-                                : 'Tienes $_porConfirmar cita(s) que requieren '
-                                    'confirmación por parte de los pacientes.',
-                            style: const TextStyle(
-                              color: Color(0xFF765116),
-                              fontSize: 15,
-                            ),
-                          ),
-                        ),
-                        OutlinedButton(
-                          onPressed: () {
-                            _mostrarMensaje(
-                              context,
-                              'La vista de solicitudes pendientes se agregará después.',
-                            );
-                          },
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: const Color(0xFF9A6916),
-                            side: const BorderSide(
-                              color: Color(0xFFE59819),
-                            ),
-                          ),
-                          child: const Text('Revisar'),
-                        ),
-                      ],
-                    ),
-                  ),
+                    if (i != _citasDeHoy.length - 1)
+                      const Divider(height: 1),
+                  ],
                 ],
               ),
             ),
+          const SizedBox(height: 32),
+          const Text(
+            'Solicitudes pendientes',
+            style: TextStyle(
+              color: verdeOscuro,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
+          const SizedBox(height: 16),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF7E8),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: const Color(0xFFF7D596),
+              ),
+            ),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.info_outline_rounded,
+                  color: Color(0xFFE59819),
+                  size: 30,
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Text(
+                    _porConfirmar == 0
+                        ? 'No tienes citas pendientes de confirmación.'
+                        : 'Tienes $_porConfirmar cita(s) que requieren '
+                            'confirmación por parte de los pacientes.',
+                    style: const TextStyle(
+                      color: Color(0xFF765116),
+                      fontSize: 15,
+                    ),
+                  ),
+                ),
+                OutlinedButton(
+                  onPressed: () {
+                    _mostrarMensaje(
+                      context,
+                      'La vista de solicitudes pendientes se agregará después.',
+                    );
+                  },
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: const Color(0xFF9A6916),
+                    side: const BorderSide(
+                      color: Color(0xFFE59819),
+                    ),
+                  ),
+                  child: const Text('Revisar'),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
