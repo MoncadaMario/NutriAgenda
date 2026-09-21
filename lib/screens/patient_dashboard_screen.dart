@@ -7,9 +7,17 @@ import '../widgets/stat_card.dart';
 import '../widgets/dashboard_scaffold.dart';
 import '../theme/app_colors.dart';
 import '../widgets/mensajes.dart';
+import '../data/patient_dashboard_repository.dart';
 
 class PatientDashboardScreen extends StatefulWidget {
-  const PatientDashboardScreen({super.key});
+  final PatientDashboardRepository? repositorioParaPruebas;
+  final String? usuarioIdParaPruebas;
+
+  const PatientDashboardScreen({
+    super.key,
+    this.repositorioParaPruebas,
+    this.usuarioIdParaPruebas,
+  });
 
   static const Color verdePrincipal = AppColors.verdePrincipal;
   static const Color verdeOscuro = AppColors.verdeOscuroAlt;
@@ -25,7 +33,8 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
   static const Color verdeOscuro = PatientDashboardScreen.verdeOscuro;
   static const Color fondoClaro = PatientDashboardScreen.fondoClaro;
 
-  final _cliente = Supabase.instance.client;
+  late final _repositorio =
+      widget.repositorioParaPruebas ?? SupabasePatientDashboardRepository();
 
   bool _cargando = true;
   String _nombre = '';
@@ -40,48 +49,23 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
   }
 
   Future<void> _cargarDatos() async {
-    final usuario = _cliente.auth.currentUser;
-    if (usuario == null) return;
+    final usuarioId = widget.usuarioIdParaPruebas ??
+        Supabase.instance.client.auth.currentUser?.id;
+    if (usuarioId == null) return;
 
     try {
-      final perfil = await _cliente
-          .from('profiles')
-          .select('nombre')
-          .eq('id', usuario.id)
-          .single();
-
-      final hoy = DateTime.now().toIso8601String().substring(0, 10);
-
-      final citas = await _cliente
-          .from('appointments')
-          .select()
-          .eq('paciente_id', usuario.id)
-          .gte('fecha', hoy)
-          .neq('estado', 'cancelada')
-          .order('fecha', ascending: true)
-          .order('hora', ascending: true)
-          .limit(1);
-
-      final historial = await _cliente
-          .from('consultations')
-          .select()
-          .eq('paciente_id', usuario.id)
-          .order('fecha', ascending: false);
-
-      final menus = await _cliente
-          .from('menus')
-          .select()
-          .eq('paciente_id', usuario.id)
-          .order('fecha', ascending: false)
-          .limit(1);
+      final perfil = await _repositorio.obtenerPerfil(usuarioId);
+      final proximaCita = await _repositorio.obtenerProximaCita(usuarioId);
+      final historial = await _repositorio.obtenerHistorial(usuarioId);
+      final ultimoMenu = await _repositorio.obtenerUltimoMenu(usuarioId);
 
       if (!mounted) return;
 
       setState(() {
         _nombre = perfil['nombre'] as String? ?? '';
-        _proximaCita = citas.isNotEmpty ? citas.first : null;
-        _historial = List<Map<String, dynamic>>.from(historial);
-        _ultimoMenu = menus.isNotEmpty ? menus.first : null;
+        _proximaCita = proximaCita;
+        _historial = historial;
+        _ultimoMenu = ultimoMenu;
         _cargando = false;
       });
     } catch (error) {

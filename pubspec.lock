@@ -280,6 +280,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
+  mock_supabase_http_client:
+    dependency: "direct dev"
+    description:
+      name: mock_supabase_http_client
+      sha256: b1b226c5c31af8e48cc70ea52a7ce01e0834e6c8f7d84ce2235d7c1005d91b7a
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0"
   passkeys_platform_interface:
     dependency: transitive
     description:
