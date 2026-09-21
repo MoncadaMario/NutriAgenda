@@ -48,6 +48,8 @@ class _LoginScreenState extends State<LoginScreen> {
         password: _contrasenaController.text,
       );
 
+      if (!mounted) return;
+
       final usuario = respuesta.user;
       if (usuario == null) {
         mostrarMensaje(context, 'No se pudo iniciar sesión.', esError: true);
@@ -77,8 +79,10 @@ class _LoginScreenState extends State<LoginScreen> {
           Navigator.pushReplacementNamed(context, '/patient-dashboard');
       }
     } on AuthException catch (error) {
+      if (!mounted) return;
       mostrarMensaje(context, error.message, esError: true);
     } catch (error) {
+      if (!mounted) return;
       mostrarMensaje(context, 'Ocurrió un error: $error', esError: true);
     } finally {
       if (mounted) {
