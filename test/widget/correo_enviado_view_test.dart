@@ -107,7 +107,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 child: Padding(
                   padding: const EdgeInsets.all(32),
                   child: _correoEnviado
-                      ? _mensajeCorreoEnviado(context)
+                      ? CorreoEnviadoView(
+                          correo: _correoController.text.trim(),
+                          colorPrincipal: verdePrincipal,
+                          colorOscuro: verdeOscuro,
+                          onVolver: () => Navigator.pop(context),
+                          onOtroCorreo: () {
+                            setState(() {
+                              _correoEnviado = false;
+                            });
+                          },
+                        )
                       : _formularioRecuperacion(),
                 ),
               ),
@@ -219,83 +229,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _mensajeCorreoEnviado(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const SizedBox(height: 10),
-        const CircleAvatar(
-          radius: 38,
-          backgroundColor: Color(0xFFDDF8E8),
-          child: Icon(
-            Icons.mark_email_read_outlined,
-            color: verdePrincipal,
-            size: 40,
-          ),
-        ),
-        const SizedBox(height: 24),
-        const Text(
-          'Revisa tu correo',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: verdeOscuro,
-            fontSize: 27,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 12),
-        Text(
-          'Si existe una cuenta asociada a ${_correoController.text.trim()}, '
-          'recibirás un enlace para restablecer tu contraseña.',
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: Color(0xFF61766C),
-            height: 1.5,
-          ),
-        ),
-        const SizedBox(height: 28),
-        SizedBox(
-          height: 52,
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: verdePrincipal,
-              foregroundColor: Colors.white,
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
-              ),
-            ),
-            child: const Text(
-              'Volver al inicio de sesión',
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 10),
-        TextButton(
-          onPressed: () {
-            setState(() {
-              _correoEnviado = false;
-            });
-          },
-          child: const Text(
-            'Usar otro correo',
-            style: TextStyle(
-              color: verdePrincipal,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
