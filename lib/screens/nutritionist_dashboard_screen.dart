@@ -6,9 +6,17 @@ import '../utils/formatters.dart';
 import '../widgets/dashboard_scaffold.dart';
 import '../theme/app_colors.dart';
 import '../widgets/mensajes.dart';
+import '../data/nutritionist_dashboard_repository.dart';
 
 class NutritionistDashboardScreen extends StatefulWidget {
-  const NutritionistDashboardScreen({super.key});
+  final NutritionistDashboardRepository? repositorioParaPruebas;
+  final String? usuarioIdParaPruebas;
+
+  const NutritionistDashboardScreen({
+    super.key,
+    this.repositorioParaPruebas,
+    this.usuarioIdParaPruebas,
+  });
 
   static const Color verdePrincipal = AppColors.verdePrincipal;
   static const Color verdeOscuro = AppColors.verdeOscuro;
@@ -25,7 +33,8 @@ class _NutritionistDashboardScreenState
   static const verdeOscuro = NutritionistDashboardScreen.verdeOscuro;
   static const fondoClaro = NutritionistDashboardScreen.fondoClaro;
 
-  final _cliente = Supabase.instance.client;
+  late final _repositorio = widget.repositorioParaPruebas ??
+      SupabaseNutritionistDashboardRepository();
 
   bool _cargando = true;
   String _nombre = '';
@@ -42,75 +51,28 @@ class _NutritionistDashboardScreenState
   }
 
   Future<void> _cargarDatos() async {
-    final usuario = _cliente.auth.currentUser;
-    if (usuario == null) return;
+    final usuarioId = widget.usuarioIdParaPruebas ??
+        Supabase.instance.client.auth.currentUser?.id;
+    if (usuarioId == null) return;
 
     try {
-      final hoy = DateTime.now().toIso8601String().substring(0, 10);
-      final inicioMes = DateTime(DateTime.now().year, DateTime.now().month, 1)
-          .toIso8601String()
-          .substring(0, 10);
-
-      final perfil = await _cliente
-          .from('profiles')
-          .select('nombre')
-          .eq('id', usuario.id)
-          .single();
-
-      final pacientes =
-          await _cliente.from('profiles').select('id').eq('rol', 'paciente');
-
-      final citasHoyData = await _cliente
-          .from('appointments')
-          .select()
-          .eq('nutricionista_id', usuario.id)
-          .eq('fecha', hoy)
-          .neq('estado', 'cancelada')
-          .order('hora', ascending: true);
-
-      final pendientes = await _cliente
-          .from('appointments')
-          .select('id')
-          .eq('nutricionista_id', usuario.id)
-          .eq('estado', 'pendiente');
-
-      final consultasMes = await _cliente
-          .from('consultations')
-          .select('id')
-          .eq('nutricionista_id', usuario.id)
-          .gte('fecha', inicioMes);
-
-      final idsPacientes = citasHoyData
-          .map((c) => c['paciente_id'] as String)
-          .toSet()
-          .toList();
-
-      Map<String, String> nombresPorId = {};
-      if (idsPacientes.isNotEmpty) {
-        final perfilesPacientes = await _cliente
-            .from('profiles')
-            .select('id, nombre')
-            .inFilter('id', idsPacientes);
-        for (final p in perfilesPacientes) {
-          nombresPorId[p['id']] = p['nombre'] ?? 'Paciente';
-        }
-      }
+      final perfil = await _repositorio.obtenerPerfil(usuarioId);
+      final pacientesActivos = await _repositorio.contarPacientes();
+      final citasDeHoy = await _repositorio.obtenerCitasDeHoy(usuarioId);
+      final porConfirmar =
+          await _repositorio.contarCitasPendientes(usuarioId);
+      final consultasDelMes =
+          await _repositorio.contarConsultasDelMes(usuarioId);
 
       if (!mounted) return;
 
       setState(() {
         _nombre = perfil['nombre'] as String? ?? '';
-        _pacientesActivos = pacientes.length;
-        _citasHoy = citasHoyData.length;
-        _porConfirmar = pendientes.length;
-        _consultasDelMes = consultasMes.length;
-        _citasDeHoy = citasHoyData.map((cita) {
-          return {
-            ...cita,
-            'nombrePaciente':
-                nombresPorId[cita['paciente_id']] ?? 'Paciente',
-          };
-        }).toList();
+        _pacientesActivos = pacientesActivos;
+        _citasHoy = citasDeHoy.length;
+        _porConfirmar = porConfirmar;
+        _consultasDelMes = consultasDelMes;
+        _citasDeHoy = citasDeHoy;
         _cargando = false;
       });
     } catch (error) {

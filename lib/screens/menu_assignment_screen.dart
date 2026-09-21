@@ -2,15 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../theme/app_colors.dart';
 import '../widgets/mensajes.dart';
+import '../data/menu_assignment_repository.dart';
 
 class MenuAssignmentScreen extends StatefulWidget {
   final String pacienteId;
   final String nombrePaciente;
+  final MenuAssignmentRepository? repositorioParaPruebas;
+  final String? usuarioIdParaPruebas;
 
   const MenuAssignmentScreen({
     super.key,
     required this.pacienteId,
     required this.nombrePaciente,
+    this.repositorioParaPruebas,
+    this.usuarioIdParaPruebas,
   });
 
   @override
@@ -19,6 +24,9 @@ class MenuAssignmentScreen extends StatefulWidget {
 
 class _MenuAssignmentScreenState extends State<MenuAssignmentScreen> {
   static const verde = AppColors.verdePrincipal;
+
+  late final _repositorio =
+      widget.repositorioParaPruebas ?? SupabaseMenuAssignmentRepository();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -39,8 +47,9 @@ class _MenuAssignmentScreenState extends State<MenuAssignmentScreen> {
       return;
     }
 
-    final usuario = Supabase.instance.client.auth.currentUser;
-    if (usuario == null) return;
+    final usuarioId = widget.usuarioIdParaPruebas ??
+        Supabase.instance.client.auth.currentUser?.id;
+    if (usuarioId == null) return;
 
     setState(() {
       _guardando = true;
@@ -50,11 +59,11 @@ class _MenuAssignmentScreenState extends State<MenuAssignmentScreen> {
       final contenido =
           '${_nombreMenuController.text.trim()}\n\n${_indicacionesController.text.trim()}';
 
-      await Supabase.instance.client.from('menus').insert({
-        'paciente_id': widget.pacienteId,
-        'nutricionista_id': usuario.id,
-        'contenido': contenido,
-      });
+      await _repositorio.asignarMenu(
+        pacienteId: widget.pacienteId,
+        nutricionistaId: usuarioId,
+        contenido: contenido,
+      );
 
       if (!mounted) return;
 

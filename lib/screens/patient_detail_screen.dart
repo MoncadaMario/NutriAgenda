@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'consultation_form_screen.dart';
 import 'menu_assignment_screen.dart';
 import 'schedule_appointment_screen.dart';
@@ -7,11 +6,17 @@ import '../utils/formatters.dart';
 import '../widgets/stat_card.dart';
 import '../widgets/dashboard_scaffold.dart';
 import '../theme/app_colors.dart';
+import '../data/patient_detail_repository.dart';
 
 class PatientDetailScreen extends StatefulWidget {
   final String pacienteId;
+  final PatientDetailRepository? repositorioParaPruebas;
 
-  const PatientDetailScreen({super.key, required this.pacienteId});
+  const PatientDetailScreen({
+    super.key,
+    required this.pacienteId,
+    this.repositorioParaPruebas,
+  });
 
   static const verde = AppColors.verdePrincipal;
   static const oscuro = AppColors.verdeOscuro;
@@ -24,7 +29,9 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
   static const verde = PatientDetailScreen.verde;
   static const oscuro = PatientDetailScreen.oscuro;
 
-  final _cliente = Supabase.instance.client;
+  late final _repositorio =
+      widget.repositorioParaPruebas ?? SupabasePatientDetailRepository();
+
   bool _cargando = true;
   Map<String, dynamic>? _perfil;
   List<Map<String, dynamic>> _historial = [];
@@ -37,23 +44,15 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
 
   Future<void> _cargarDatos() async {
     try {
-      final perfil = await _cliente
-          .from('profiles')
-          .select()
-          .eq('id', widget.pacienteId)
-          .single();
-
-      final historial = await _cliente
-          .from('consultations')
-          .select()
-          .eq('paciente_id', widget.pacienteId)
-          .order('fecha', ascending: false);
+      final perfil = await _repositorio.obtenerPerfil(widget.pacienteId);
+      final historial =
+          await _repositorio.obtenerHistorial(widget.pacienteId);
 
       if (!mounted) return;
 
       setState(() {
         _perfil = perfil;
-        _historial = List<Map<String, dynamic>>.from(historial);
+        _historial = historial;
         _cargando = false;
       });
     } catch (error) {

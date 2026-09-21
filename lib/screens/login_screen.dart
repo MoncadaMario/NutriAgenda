@@ -6,9 +6,12 @@ import '../widgets/campo_decoration.dart';
 import '../utils/session_cookie.dart';
 import '../theme/app_colors.dart';
 import '../widgets/mensajes.dart';
+import '../data/login_repository.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final LoginRepository? repositorioParaPruebas;
+
+  const LoginScreen({super.key, this.repositorioParaPruebas});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -19,6 +22,9 @@ class _LoginScreenState extends State<LoginScreen> {
   static const Color verdeMenta = AppColors.verdeMenta;
   static const Color fondoClaro = AppColors.fondoClaro;
   static const Color textoOscuro = AppColors.verdeOscuro;
+
+  late final _repositorio =
+      widget.repositorioParaPruebas ?? SupabaseLoginRepository();
 
   final _correoController = TextEditingController();
   final _contrasenaController = TextEditingController();
@@ -43,30 +49,18 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      final respuesta = await Supabase.instance.client.auth.signInWithPassword(
-        email: _correoController.text.trim(),
-        password: _contrasenaController.text,
+      final usuarioId = await _repositorio.iniciarSesion(
+        correo: _correoController.text.trim(),
+        contrasena: _contrasenaController.text,
       );
 
       if (!mounted) return;
 
-      final usuario = respuesta.user;
-      if (usuario == null) {
-        mostrarMensaje(context, 'No se pudo iniciar sesión.', esError: true);
-        return;
-      }
-
       marcarSesionActiva();
 
-      final perfil = await Supabase.instance.client
-          .from('profiles')
-          .select()
-          .eq('id', usuario.id)
-          .single();
+      final rol = await _repositorio.obtenerRol(usuarioId);
 
       if (!mounted) return;
-
-      final rol = perfil['rol'] as String;
 
       switch (rol) {
         case 'nutricionista':

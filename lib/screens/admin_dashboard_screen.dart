@@ -7,9 +7,17 @@ import '../widgets/stat_card.dart';
 import '../widgets/dashboard_scaffold.dart';
 import '../theme/app_colors.dart';
 import '../widgets/mensajes.dart';
+import '../data/admin_dashboard_repository.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
-  const AdminDashboardScreen({super.key});
+  final AdminDashboardRepository? repositorioParaPruebas;
+  final String? usuarioIdParaPruebas;
+
+  const AdminDashboardScreen({
+    super.key,
+    this.repositorioParaPruebas,
+    this.usuarioIdParaPruebas,
+  });
 
   static const verde = AppColors.verdePrincipal;
   static const oscuro = AppColors.verdeOscuro;
@@ -22,7 +30,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   static const verde = AdminDashboardScreen.verde;
   static const oscuro = AdminDashboardScreen.oscuro;
 
-  final _cliente = Supabase.instance.client;
+  late final _repositorio =
+      widget.repositorioParaPruebas ?? SupabaseAdminDashboardRepository();
+
   bool _cargando = true;
   String _iniciales = 'AD';
   int _totalUsuarios = 0;
@@ -37,25 +47,14 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   }
 
   Future<void> _cargarDatos() async {
-    final usuario = _cliente.auth.currentUser;
-    if (usuario == null) return;
+    final usuarioId = widget.usuarioIdParaPruebas ??
+        Supabase.instance.client.auth.currentUser?.id;
+    if (usuarioId == null) return;
 
     try {
-      final inicioMes = DateTime(DateTime.now().year, DateTime.now().month, 1)
-          .toIso8601String()
-          .substring(0, 10);
-
-      final miPerfil = await _cliente
-          .from('profiles')
-          .select('nombre')
-          .eq('id', usuario.id)
-          .single();
-
-      final todos = await _cliente.from('profiles').select('id, rol');
-      final citasMes = await _cliente
-          .from('appointments')
-          .select('id')
-          .gte('fecha', inicioMes);
+      final miPerfil = await _repositorio.obtenerPerfil(usuarioId);
+      final todos = await _repositorio.obtenerTodosLosUsuarios();
+      final citasDelMes = await _repositorio.contarCitasDelMes();
 
       if (!mounted) return;
 
@@ -71,7 +70,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             todos.where((u) => u['rol'] == 'paciente').length;
         _totalNutricionistas =
             todos.where((u) => u['rol'] == 'nutricionista').length;
-        _citasDelMes = citasMes.length;
+        _citasDelMes = citasDelMes;
         _cargando = false;
       });
     } catch (error) {

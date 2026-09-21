@@ -3,9 +3,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../widgets/campo_decoration.dart';
 import '../widgets/correo_enviado_view.dart';
 import '../theme/app_colors.dart';
+import '../data/forgot_password_repository.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
-  const ForgotPasswordScreen({super.key});
+  final ForgotPasswordRepository? repositorioParaPruebas;
+
+  const ForgotPasswordScreen({super.key, this.repositorioParaPruebas});
 
   @override
   State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
@@ -15,6 +18,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   static const Color verdePrincipal = AppColors.verdePrincipal;
   static const Color verdeOscuro = AppColors.verdeOscuro;
   static const Color fondoClaro = AppColors.fondoClaro;
+
+  late final _repositorio =
+      widget.repositorioParaPruebas ?? SupabaseForgotPasswordRepository();
 
   final _formKey = GlobalKey<FormState>();
   final _correoController = TextEditingController();
@@ -38,7 +44,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     });
 
     try {
-      await Supabase.instance.client.auth.resetPasswordForEmail(
+      await _repositorio.enviarEnlaceRecuperacion(
         _correoController.text.trim(),
       );
 
