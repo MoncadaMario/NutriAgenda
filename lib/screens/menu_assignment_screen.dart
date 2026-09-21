@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../theme/app_colors.dart';
+import '../widgets/mensajes.dart';
 
 class MenuAssignmentScreen extends StatefulWidget {
   final String pacienteId;
@@ -33,15 +34,6 @@ class _MenuAssignmentScreenState extends State<MenuAssignmentScreen> {
     super.dispose();
   }
 
-  void _mostrarMensaje(String mensaje, {bool esError = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(mensaje),
-        backgroundColor: esError ? Colors.redAccent : verde,
-      ),
-    );
-  }
-
   Future<void> _asignarMenu() async {
     if (!_formKey.currentState!.validate()) {
       return;
@@ -66,11 +58,14 @@ class _MenuAssignmentScreenState extends State<MenuAssignmentScreen> {
 
       if (!mounted) return;
 
-      _mostrarMensaje('Menú asignado a ${widget.nombrePaciente} correctamente.');
+      mostrarMensaje(
+        context,
+        'Menú asignado a ${widget.nombrePaciente} correctamente.',
+      );
       Navigator.pop(context);
     } catch (error) {
       if (!mounted) return;
-      _mostrarMensaje('Error al asignar el menú: $error', esError: true);
+      mostrarMensaje(context, 'Error al asignar el menú: $error', esError: true);
     } finally {
       if (mounted) {
         setState(() {

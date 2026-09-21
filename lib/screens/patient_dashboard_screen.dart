@@ -6,6 +6,7 @@ import '../utils/formatters.dart';
 import '../widgets/stat_card.dart';
 import '../widgets/dashboard_scaffold.dart';
 import '../theme/app_colors.dart';
+import '../widgets/mensajes.dart';
 
 class PatientDashboardScreen extends StatefulWidget {
   const PatientDashboardScreen({super.key});
@@ -97,16 +98,6 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
     }
   }
 
-  void _mostrarMensaje(BuildContext context, String mensaje) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(mensaje),
-        backgroundColor: verdePrincipal,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     if (_cargando) {
@@ -157,7 +148,7 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
           IconButton(
             tooltip: 'Notificaciones',
             onPressed: () {
-              _mostrarMensaje(context, 'No tienes notificaciones nuevas.');
+              mostrarMensaje(context, 'No tienes notificaciones nuevas.');
             },
             icon: const Icon(
               Icons.notifications_none_rounded,
@@ -201,7 +192,6 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
           ),
           const SizedBox(height: 28),
 
-          // Próxima cita
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(24),
@@ -462,7 +452,7 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
                     ),
                     OutlinedButton.icon(
                       onPressed: () {
-                        _mostrarMensaje(
+                        mostrarMensaje(
                           context,
                           _ultimoMenu!['contenido'] ??
                               'Este menú no tiene contenido adicional.',
@@ -484,56 +474,6 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
               ),
             ),
         ],
-      ),
-    );
-  }
-}
-
-class _MetricCard extends StatelessWidget {
-  final IconData icono;
-  final String titulo;
-  final String valor;
-
-  const _MetricCard({
-    required this.icono,
-    required this.titulo,
-    required this.valor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 200,
-      child: Card(
-        elevation: 0,
-        color: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-          side: const BorderSide(color: Color(0xFFE0EEE6)),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(icono, color: PatientDashboardScreen.verdePrincipal),
-              const SizedBox(height: 18),
-              Text(
-                titulo,
-                style: const TextStyle(color: Color(0xFF62766D)),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                valor,
-                style: const TextStyle(
-                  color: PatientDashboardScreen.verdeOscuro,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

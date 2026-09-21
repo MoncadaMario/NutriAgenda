@@ -5,6 +5,7 @@ import 'forgot_password_screen.dart';
 import '../widgets/campo_decoration.dart';
 import '../utils/session_cookie.dart';
 import '../theme/app_colors.dart';
+import '../widgets/mensajes.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -30,20 +31,10 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _mostrarMensaje(String mensaje, {bool esError = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(mensaje),
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: esError ? Colors.redAccent : verdePrincipal,
-      ),
-    );
-  }
-
   Future<void> _iniciarSesion() async {
     if (_correoController.text.trim().isEmpty ||
         _contrasenaController.text.isEmpty) {
-      _mostrarMensaje('Ingresa tu correo y contraseña.', esError: true);
+      mostrarMensaje(context, 'Ingresa tu correo y contraseña.', esError: true);
       return;
     }
 
@@ -59,11 +50,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
       final usuario = respuesta.user;
       if (usuario == null) {
-        _mostrarMensaje('No se pudo iniciar sesión.', esError: true);
+        mostrarMensaje(context, 'No se pudo iniciar sesión.', esError: true);
         return;
       }
 
-            marcarSesionActiva();
+      marcarSesionActiva();
 
       final perfil = await Supabase.instance.client
           .from('profiles')
@@ -86,9 +77,9 @@ class _LoginScreenState extends State<LoginScreen> {
           Navigator.pushReplacementNamed(context, '/patient-dashboard');
       }
     } on AuthException catch (error) {
-      _mostrarMensaje(error.message, esError: true);
+      mostrarMensaje(context, error.message, esError: true);
     } catch (error) {
-      _mostrarMensaje('Ocurrió un error: $error', esError: true);
+      mostrarMensaje(context, 'Ocurrió un error: $error', esError: true);
     } finally {
       if (mounted) {
         setState(() {

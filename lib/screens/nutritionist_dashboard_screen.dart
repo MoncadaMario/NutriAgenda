@@ -5,6 +5,7 @@ import '../widgets/logout_button.dart';
 import '../utils/formatters.dart';
 import '../widgets/dashboard_scaffold.dart';
 import '../theme/app_colors.dart';
+import '../widgets/mensajes.dart';
 
 class NutritionistDashboardScreen extends StatefulWidget {
   const NutritionistDashboardScreen({super.key});
@@ -38,16 +39,6 @@ class _NutritionistDashboardScreenState
   void initState() {
     super.initState();
     _cargarDatos();
-  }
-
-  void _mostrarMensaje(BuildContext context, String mensaje) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(mensaje),
-        backgroundColor: verdePrincipal,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
   }
 
   Future<void> _cargarDatos() async {
@@ -89,7 +80,6 @@ class _NutritionistDashboardScreenState
           .eq('nutricionista_id', usuario.id)
           .gte('fecha', inicioMes);
 
-      // Buscamos los nombres de los pacientes de las citas de hoy
       final idsPacientes = citasHoyData
           .map((c) => c['paciente_id'] as String)
           .toSet()
@@ -190,7 +180,7 @@ class _NutritionistDashboardScreenState
           IconButton(
             tooltip: 'Notificaciones',
             onPressed: () {
-              _mostrarMensaje(context, 'No tienes notificaciones nuevas.');
+              mostrarMensaje(context, 'No tienes notificaciones nuevas.');
             },
             icon: const Icon(
               Icons.notifications_none_rounded,
@@ -317,7 +307,7 @@ class _NutritionistDashboardScreenState
               ),
               TextButton(
                 onPressed: () {
-                  _mostrarMensaje(
+                  mostrarMensaje(
                     context,
                     'La agenda completa se agregará después.',
                   );
@@ -420,7 +410,7 @@ class _NutritionistDashboardScreenState
                 ),
                 OutlinedButton(
                   onPressed: () {
-                    _mostrarMensaje(
+                    mostrarMensaje(
                       context,
                       'La vista de solicitudes pendientes se agregará después.',
                     );

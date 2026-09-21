@@ -6,6 +6,7 @@ import '../widgets/logout_button.dart';
 import '../widgets/stat_card.dart';
 import '../widgets/dashboard_scaffold.dart';
 import '../theme/app_colors.dart';
+import '../widgets/mensajes.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
   const AdminDashboardScreen({super.key});
@@ -33,12 +34,6 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   void initState() {
     super.initState();
     _cargarDatos();
-  }
-
-  void _mostrarMensaje(String mensaje) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(mensaje), backgroundColor: verde),
-    );
   }
 
   Future<void> _cargarDatos() async {
@@ -215,7 +210,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               ),
               OutlinedButton.icon(
                 onPressed: () {
-                  _mostrarMensaje(
+                  mostrarMensaje(
+                    context,
                     'La vista de todas las citas se agregará después.',
                   );
                 },
