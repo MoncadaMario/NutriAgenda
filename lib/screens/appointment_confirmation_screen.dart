@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../utils/formatters.dart';
+import '../theme/app_colors.dart';
 
 class AppointmentConfirmationScreen extends StatefulWidget {
   final Map<String, dynamic> cita;
@@ -14,9 +15,9 @@ class AppointmentConfirmationScreen extends StatefulWidget {
 
 class _AppointmentConfirmationScreenState
     extends State<AppointmentConfirmationScreen> {
-  static const verde = Color(0xFF168B62);
-  static const rojo = Color(0xFFB34732);
-  static const naranja = Color(0xFFE59819);
+  static const verde = AppColors.verdePrincipal;
+  static const rojo = AppColors.rojo;
+  static const naranja = AppColors.naranja;
 
   late String _estado;
   bool _actualizando = false;

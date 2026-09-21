@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import '../theme/app_colors.dart';
 
 class NotFoundScreen extends StatelessWidget {
   const NotFoundScreen({super.key});
 
-  static const Color verdePrincipal = Color(0xFF168B62);
-  static const Color verdeOscuro = Color(0xFF173D2D);
-  static const Color fondoClaro = Color(0xFFF4FBF7);
+  static const Color verdePrincipal = AppColors.verdePrincipal;
+  static const Color verdeOscuro = AppColors.verdeOscuro;
+  static const Color fondoClaro = AppColors.fondoClaro;
 
   @override
   Widget build(BuildContext context) {

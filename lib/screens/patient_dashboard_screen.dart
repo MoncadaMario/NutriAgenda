@@ -5,13 +5,14 @@ import '../widgets/logout_button.dart';
 import '../utils/formatters.dart';
 import '../widgets/stat_card.dart';
 import '../widgets/dashboard_scaffold.dart';
+import '../theme/app_colors.dart';
 
 class PatientDashboardScreen extends StatefulWidget {
   const PatientDashboardScreen({super.key});
 
-  static const Color verdePrincipal = Color(0xFF168B62);
-  static const Color verdeOscuro = Color(0xFF123F2E);
-  static const Color fondoClaro = Color(0xFFF4FBF7);
+  static const Color verdePrincipal = AppColors.verdePrincipal;
+  static const Color verdeOscuro = AppColors.verdeOscuroAlt;
+  static const Color fondoClaro = AppColors.fondoClaro;
 
   @override
   State<PatientDashboardScreen> createState() =>

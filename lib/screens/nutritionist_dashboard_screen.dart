@@ -4,13 +4,14 @@ import 'patients_screen.dart';
 import '../widgets/logout_button.dart';
 import '../utils/formatters.dart';
 import '../widgets/dashboard_scaffold.dart';
+import '../theme/app_colors.dart';
 
 class NutritionistDashboardScreen extends StatefulWidget {
   const NutritionistDashboardScreen({super.key});
 
-  static const Color verdePrincipal = Color(0xFF168B62);
-  static const Color verdeOscuro = Color(0xFF173D2D);
-  static const Color fondoClaro = Color(0xFFF4FBF7);
+  static const Color verdePrincipal = AppColors.verdePrincipal;
+  static const Color verdeOscuro = AppColors.verdeOscuro;
+  static const Color fondoClaro = AppColors.fondoClaro;
 
   @override
   State<NutritionistDashboardScreen> createState() =>

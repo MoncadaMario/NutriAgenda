@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'patient_detail_screen.dart';
+import '../theme/app_colors.dart';
 
 class PatientsScreen extends StatefulWidget {
   const PatientsScreen({super.key});
@@ -10,8 +11,8 @@ class PatientsScreen extends StatefulWidget {
 }
 
 class _PatientsScreenState extends State<PatientsScreen> {
-  static const verde = Color(0xFF168B62);
-  static const oscuro = Color(0xFF173D2D);
+  static const verde = AppColors.verdePrincipal;
+  static const oscuro = AppColors.verdeOscuro;
 
   final _cliente = Supabase.instance.client;
   bool _cargando = true;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../theme/app_colors.dart';
 
 class UserManagementScreen extends StatefulWidget {
   const UserManagementScreen({super.key});
@@ -9,8 +10,8 @@ class UserManagementScreen extends StatefulWidget {
 }
 
 class _UserManagementScreenState extends State<UserManagementScreen> {
-  static const verde = Color(0xFF168B62);
-  static const naranja = Color(0xFFE59819);
+  static const verde = AppColors.verdePrincipal;
+  static const naranja = AppColors.naranja;
 
   final _cliente = Supabase.instance.client;
   bool _cargando = true;

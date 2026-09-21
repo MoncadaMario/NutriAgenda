@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../theme/app_colors.dart';
 
 class MenuAssignmentScreen extends StatefulWidget {
   final String pacienteId;
@@ -16,7 +17,7 @@ class MenuAssignmentScreen extends StatefulWidget {
 }
 
 class _MenuAssignmentScreenState extends State<MenuAssignmentScreen> {
-  static const verde = Color(0xFF168B62);
+  static const verde = AppColors.verdePrincipal;
 
   final _formKey = GlobalKey<FormState>();
 

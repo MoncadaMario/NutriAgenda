@@ -6,14 +6,15 @@ import 'schedule_appointment_screen.dart';
 import '../utils/formatters.dart';
 import '../widgets/stat_card.dart';
 import '../widgets/dashboard_scaffold.dart';
+import '../theme/app_colors.dart';
 
 class PatientDetailScreen extends StatefulWidget {
   final String pacienteId;
 
   const PatientDetailScreen({super.key, required this.pacienteId});
 
-  static const verde = Color(0xFF168B62);
-  static const oscuro = Color(0xFF173D2D);
+  static const verde = AppColors.verdePrincipal;
+  static const oscuro = AppColors.verdeOscuro;
 
   @override
   State<PatientDetailScreen> createState() => _PatientDetailScreenState();

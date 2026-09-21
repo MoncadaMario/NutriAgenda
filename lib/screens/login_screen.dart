@@ -4,6 +4,7 @@ import 'register_screen.dart';
 import 'forgot_password_screen.dart';
 import '../widgets/campo_decoration.dart';
 import '../utils/session_cookie.dart';
+import '../theme/app_colors.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,10 +14,10 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  static const Color verdePrincipal = Color(0xFF168B62);
-  static const Color verdeMenta = Color(0xFFBFEFD8);
-  static const Color fondoClaro = Color(0xFFF4FBF7);
-  static const Color textoOscuro = Color(0xFF173D2D);
+  static const Color verdePrincipal = AppColors.verdePrincipal;
+  static const Color verdeMenta = AppColors.verdeMenta;
+  static const Color fondoClaro = AppColors.fondoClaro;
+  static const Color textoOscuro = AppColors.verdeOscuro;
 
   final _correoController = TextEditingController();
   final _contrasenaController = TextEditingController();

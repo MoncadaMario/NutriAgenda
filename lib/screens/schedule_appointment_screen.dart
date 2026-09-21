@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../utils/formatters.dart';
 import '../widgets/campo_decoration.dart';
+import '../theme/app_colors.dart';
 
 class ScheduleAppointmentScreen extends StatefulWidget {
   final String pacienteId;
@@ -19,9 +20,9 @@ class ScheduleAppointmentScreen extends StatefulWidget {
 }
 
 class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
-  static const Color verdePrincipal = Color(0xFF168B62);
-  static const Color verdeOscuro = Color(0xFF173D2D);
-  static const Color fondoClaro = Color(0xFFF4FBF7);
+  static const Color verdePrincipal = AppColors.verdePrincipal;
+  static const Color verdeOscuro = AppColors.verdeOscuro;
+  static const Color fondoClaro = AppColors.fondoClaro;
 
   final _formKey = GlobalKey<FormState>();
   final _notasController = TextEditingController();

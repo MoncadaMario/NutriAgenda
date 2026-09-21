@@ -5,12 +5,13 @@ import '../utils/formatters.dart';
 import '../widgets/logout_button.dart';
 import '../widgets/stat_card.dart';
 import '../widgets/dashboard_scaffold.dart';
+import '../theme/app_colors.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
   const AdminDashboardScreen({super.key});
 
-  static const verde = Color(0xFF168B62);
-  static const oscuro = Color(0xFF173D2D);
+  static const verde = AppColors.verdePrincipal;
+  static const oscuro = AppColors.verdeOscuro;
 
   @override
   State<AdminDashboardScreen> createState() => _AdminDashboardScreenState();
